@@ -1,53 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Collectify - Rare Collects</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collectify - Rare Collects</title>
 
-  <!-- CSS file linked here -->
-  <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <header>
-    <h1>Collectify</h1>
-    <p>Rare Collects Auction Store</p>
-    <button onclick="loginUser()">Login</button>
-  </header>
+    <header>
+        <h1>Collectify</h1>
+        <p>Rare Collects Auction Store</p>
+        <button onclick="loginUser()">Login</button>
+    </header>
 
-  <section class="hero">
-    <div>
-      <h2>Find rare collectibles and bid live</h2>
-      <p>Cards, comics, watches, coins and signed items in one marketplace.</p>
-    </div>
+    <section class="hero">
+        <div>
+            <h2>Find Rare Collectibles and Bid Live</h2>
+            <p>Cards, comics, watches, coins and signed items in one marketplace.</p>
+        </div>
 
-    <div class="hero-card">
-      <span>Legendary</span>
-      <h3>1962 Rookie Card</h3>
-      <p>Current Bid: $8650</p>
-    </div>
-  </section>
+        <div class="hero-card">
+            <span>Legendary</span>
+            <h3>1962 Rookie Card</h3>
+            <p>Current Bid: $8650</p>
+        </div>
+    </section>
 
-  <section class="filters">
-    <input type="text" id="searchBox" placeholder="Search collectible..." onkeyup="showItems()">
+    <section class="filters">
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search collectible..."
+            onkeyup="showItems()"
+        >
 
-    <select id="categoryFilter" onchange="showItems()">
-      <option value="All">All Categories</option>
-      <option value="Cards">Cards</option>
-      <option value="Comics">Comics</option>
-      <option value="Coins">Coins</option>
-      <option value="Watches">Watches</option>
-    </select>
+        <select id="categoryFilter" onchange="showItems()">
+            <option value="All">All Categories</option>
+            <option value="Cards">Cards</option>
+            <option value="Comics">Comics</option>
+            <option value="Coins">Coins</option>
+            <option value="Watches">Watches</option>
+        </select>
 
-    <select id="rarityFilter" onchange="showItems()">
-      <option value="All">All Rarity</option>
-      <option value="Common">Common</option>
-      <option value="Rare">Rare</option>
-      <option value="Epic">Epic</option>
-      <option value="Legendary">Legendary</option>
-    </select>
-  </section>
+        <select id="rarityFilter" onchange="showItems()">
+            <option value="All">All Rarity</option>
+            <option value="Common">Common</option>
+            <option value="Rare">Rare</option>
+            <option value="Epic">Epic</option>
+            <option value="Legendary">Legendary</option>
+        </select>
+    </section>
+
+    <main>
+        <section>
+            <h2>Live Auctions</h2>
+            <div id="itemList" class="grid"></div>
+        </section>
+
+        <aside>
+            <h2>Profile</h2>
+            <p id="profile">Guest User</p>
+
+            <h2>Wishlist</h2>
+            <ul id="wishlist"></ul>
+
+            <h2>Notifications</h2>
+            <ul id="notifications">
+                <li>Welcome to Collectify!</li>
+            </ul>
+        </aside>
+    </main>
+
+    <section class="form-section">
+        <h2>Create Listing</h2>
+
+        <form id="listingForm">
+            <input
+                type="text"
+                id="name"
+                placeholder="Item Name"
+                required
+            >
+
+            <input
+                type="number"
+                id="price"
+                placeholder="Price"
+                required
+            >
+
+            <select id="category">
+                <option value="Cards">Cards</option>
+                <option value="Comics">Comics</option>
+                <option value="Coins">Coins</option>
+                <option value="Watches">Watches</option>
+            </select>
+
+            <select id="rarity">
+                <option value="Common">Common</option>
+                <option value="Rare">Rare</option>
+                <option value="Epic">Epic</option>
+                <option value="Legendary">Legendary</option>
+            </select>
+
+            <input
+                type="file"
+                id="image"
+                accept="image/*"
+            >
+
+            <button type="button" onclick="addItem()">
+                Add Listing
+            </button>
+        </form>
+    </section>
+
+    <section class="admin">
+        <h2>Admin Panel</h2>
+        <p>Total Users: 4</p>
+        <p>Total Listings: <span id="totalListings">0</span></p>
+        <p>Admin can manage users and remove fake listings.</p>
+    </section>
+
+    <script src="app.js"></script>
 
 </body>
 </html>
