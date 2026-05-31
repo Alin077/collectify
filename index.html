@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collectify - Rare Collects</title>
+
+  <!-- CSS file linked here -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>Collectify</h1>
+    <p>Rare Collects Auction Store</p>
+    <button onclick="loginUser()">Login</button>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h2>Find rare collectibles and bid live</h2>
+      <p>Cards, comics, watches, coins and signed items in one marketplace.</p>
+    </div>
+
+    <div class="hero-card">
+      <span>Legendary</span>
+      <h3>1962 Rookie Card</h3>
+      <p>Current Bid: $8650</p>
+    </div>
+  </section>
+
+  <section class="filters">
+    <input type="text" id="searchBox" placeholder="Search collectible..." onkeyup="showItems()">
+
+    <select id="categoryFilter" onchange="showItems()">
+      <option value="All">All Categories</option>
+      <option value="Cards">Cards</option>
+      <option value="Comics">Comics</option>
+      <option value="Coins">Coins</option>
+      <option value="Watches">Watches</option>
+    </select>
+
+    <select id="rarityFilter" onchange="showItems()">
+      <option value="All">All Rarity</option>
+      <option value="Common">Common</option>
+      <option value="Rare">Rare</option>
+      <option value="Epic">Epic</option>
+      <option value="Legendary">Legendary</option>
+    </select>
+  </section>
+
+</body>
+</html>
