@@ -43,12 +43,25 @@ function showItems() {
   const search = document.getElementById("searchBox").value.toLowerCase();
   const category = document.getElementById("categoryFilter").value;
   const rarity = document.getElementById("rarityFilter").value;
+  const sort = document.getElementById("sortFilter").value;
 
   const filteredItems = items.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(search);
     const matchesCategory = category === "All" || item.category === category;
     const matchesRarity = rarity === "All" || item.rarity === rarity;
     return matchesSearch && matchesCategory && matchesRarity;
+  });
+
+  filteredItems.sort((firstItem, secondItem) => {
+    if (sort === "highestBid") {
+      return secondItem.price - firstItem.price;
+    }
+
+    if (sort === "topRated") {
+      return secondItem.rating - firstItem.rating;
+    }
+
+    return firstItem.time - secondItem.time;
   });
 
   totalListings.textContent = items.length;
