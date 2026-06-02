@@ -7,7 +7,7 @@ let items = [
     seller: "Buddha Art Gallery",
     rating: 4.9,
     time: 180,
-    image: ""
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Contemporary%20Thangka%20Painting%2C%20c%201980%2C%20Nepal%2C%20V%26A%20Museum%2C%20London.jpg"
   },
   {
     name: "King Tribhuvan Silver Mohar Coin (1950)",
@@ -17,7 +17,7 @@ let items = [
     seller: "Himalayan Collectibles",
     rating: 4.8,
     time: 120,
-    image: ""
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/5%20Paise%20coin%20of%20the%20Nepal%201943%20featuring%20the%20Buddhist%20Treasure%20Vase%2C%20from%20the%20reign%20of%20Tribhuvana%20Bir%20Bikram.jpg"
   },
   {
     name: "Old Kathmandu Postcard Collection (1920-1940)",
@@ -27,7 +27,7 @@ let items = [
     seller: "Retro Nepal Collectibles",
     rating: 4.6,
     time: 240,
-    image: ""
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Old%20Kathmandu%20%282%29.jpg"
   },
   {
     name: "Gurkha Regiment Service Medal (WWII Era)",
@@ -37,7 +37,7 @@ let items = [
     seller: "Gurkha Heritage House",
     rating: 4.9,
     time: 90,
-    image: ""
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Nepal%20Medal%2C%201814-1816.jpg"
   },
   {
     name: "First Edition Muna Madan (1936 Print)",
@@ -47,7 +47,7 @@ let items = [
     seller: "Nepal Book Collectors",
     rating: 4.7,
     time: 300,
-    image: ""
+    image: "https://covers.openlibrary.org/b/olid/OL25422917M-L.jpg"
   }
 ];
 
@@ -90,7 +90,7 @@ function showItems() {
       const originalIndex = items.indexOf(item);
       return `
       <article class="item-card">
-        <div class="item-image">${item.image ? `<img src="${item.image}" alt="${item.name}">` : item.rarity}</div>
+        <div class="item-image">${item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy">` : item.rarity}</div>
         <div class="item-content">
           <span>${item.category} / ${item.rarity}</span>
           <h3>${item.name}</h3>

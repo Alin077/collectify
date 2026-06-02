@@ -40,3 +40,8 @@ backend/
 - Create backend API routes
 - Connect the frontend to backend data
 - Add admin controls for listings and users
+
+## Image Sources
+
+- Thangka, coin, Kathmandu and medal images use public Wikimedia Commons file links.
+- Muna Madan cover image uses Open Library cover data.
