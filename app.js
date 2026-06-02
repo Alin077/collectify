@@ -1,39 +1,59 @@
 let items = [
   {
-    name: "1962 Rookie Card",
-    category: "Cards",
-    rarity: "Legendary",
-    price: 8650,
-    seller: "Ava",
+    name: "Vintage Thangka Painting (Hand-Painted, 1960s)",
+    category: "Religious Art",
+    rarity: "Extremely Rare",
+    price: 85000,
+    seller: "Buddha Art Gallery",
+    rating: 4.9,
+    time: 180,
+    image: ""
+  },
+  {
+    name: "King Tribhuvan Silver Mohar Coin (1950)",
+    category: "Coins",
+    rarity: "Very Rare",
+    price: 25000,
+    seller: "Himalayan Collectibles",
+    rating: 4.8,
+    time: 120,
+    image: ""
+  },
+  {
+    name: "Old Kathmandu Postcard Collection (1920-1940)",
+    category: "Photographs",
+    rarity: "Very Rare",
+    price: 18000,
+    seller: "Retro Nepal Collectibles",
+    rating: 4.6,
+    time: 240,
+    image: ""
+  },
+  {
+    name: "Gurkha Regiment Service Medal (WWII Era)",
+    category: "Memorabilia",
+    rarity: "Extremely Rare",
+    price: 95000,
+    seller: "Gurkha Heritage House",
     rating: 4.9,
     time: 90,
     image: ""
   },
   {
-    name: "Astro Knight Comic",
-    category: "Comics",
-    rarity: "Epic",
-    price: 1200,
-    seller: "Mira",
+    name: "First Edition Muna Madan (1936 Print)",
+    category: "Books",
+    rarity: "Very Rare",
+    price: 40000,
+    seller: "Nepal Book Collectors",
     rating: 4.7,
-    time: 240,
-    image: ""
-  },
-  {
-    name: "Old Silver Coin",
-    category: "Coins",
-    rarity: "Rare",
-    price: 450,
-    seller: "Theo",
-    rating: 4.6,
-    time: 160,
+    time: 300,
     image: ""
   }
 ];
 
-const money = new Intl.NumberFormat("en-US", {
+const money = new Intl.NumberFormat("en-NP", {
   style: "currency",
-  currency: "USD",
+  currency: "NPR",
   maximumFractionDigits: 0
 });
 
