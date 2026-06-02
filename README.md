@@ -43,5 +43,5 @@ backend/
 
 ## Image Sources
 
-- Thangka, coin, Kathmandu and medal images use public Wikimedia Commons file links.
+- Thangka, coin, Kathmandu market and medal images use public Wikimedia Commons file links.
 - Muna Madan cover image uses Open Library cover data.

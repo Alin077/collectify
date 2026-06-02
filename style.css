@@ -112,14 +112,14 @@ main {
 }
 
 .item-image {
+  aspect-ratio: 4 / 3;
   align-items: center;
   background: #172033;
   color: white;
   display: flex;
   font-weight: 700;
-  height: 160px;
   justify-content: center;
-  min-height: 130px;
+  width: 100%;
 }
 
 .item-image img {

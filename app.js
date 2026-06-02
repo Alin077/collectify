@@ -27,7 +27,7 @@ let items = [
     seller: "Retro Nepal Collectibles",
     rating: 4.6,
     time: 240,
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Old%20Kathmandu%20%282%29.jpg"
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kathmandu%20Market%201920.jpg"
   },
   {
     name: "Gurkha Regiment Service Medal (WWII Era)",
