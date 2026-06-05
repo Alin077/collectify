@@ -2,6 +2,7 @@ import sqlite3
 from contextlib import closing
 
 from config import DATABASE_PATH
+from seed_data import seed_default_listings
 
 
 SCHEMA = """
@@ -48,6 +49,7 @@ def get_connection():
 def init_db():
     with closing(get_connection()) as connection:
         connection.executescript(SCHEMA)
+        seed_default_listings(connection)
         connection.commit()
 
 
