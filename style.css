@@ -39,6 +39,13 @@ button {
   padding: 10px 16px;
 }
 
+.text-button {
+  background: transparent;
+  color: #0f766e;
+  justify-self: start;
+  padding: 0;
+}
+
 .nav-link {
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.38);
@@ -160,7 +167,9 @@ form {
 }
 
 .auth-layout {
-  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  display: block;
+  margin: 0 auto;
+  max-width: 560px;
 }
 
 .auth-panel {
@@ -168,6 +177,34 @@ form {
   border: 1px solid #dbe3ef;
   border-radius: 8px;
   padding: 22px;
+}
+
+.auth-tabs {
+  background: #e2e8f0;
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 20px;
+  padding: 4px;
+}
+
+.auth-tab {
+  background: transparent;
+  color: #475569;
+}
+
+.auth-tab.active {
+  background: white;
+  color: #0f766e;
+}
+
+.auth-form {
+  display: none;
+}
+
+.auth-form.active {
+  display: grid;
 }
 
 .auth-message {

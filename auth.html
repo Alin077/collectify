@@ -15,20 +15,30 @@
     </header>
 
     <main class="auth-layout">
-        <section class="auth-panel">
-            <h2>Login</h2>
-            <form id="loginForm">
+        <section class="auth-panel auth-tabs-panel">
+            <div class="auth-tabs" role="tablist" aria-label="Account forms">
+                <button class="auth-tab active" type="button" onclick="switchAuthTab('login')" id="loginTab">
+                    Login
+                </button>
+                <button class="auth-tab" type="button" onclick="switchAuthTab('register')" id="registerTab">
+                    Register
+                </button>
+            </div>
+
+            <form id="loginForm" class="auth-form active">
+                <h2>Login</h2>
                 <input type="email" id="loginEmail" placeholder="Email address" required>
                 <input type="password" id="loginPassword" placeholder="Password" required>
+                <button class="text-button" type="button" onclick="showAuthMessage('Password reset email feature will be added with backend email support.')">
+                    Forgot password?
+                </button>
                 <button type="button" onclick="showAuthMessage('Login will connect to the backend API next.')">
                     Login
                 </button>
             </form>
-        </section>
 
-        <section class="auth-panel">
-            <h2>Create Account</h2>
-            <form id="registerForm">
+            <form id="registerForm" class="auth-form">
+                <h2>Create Account</h2>
                 <input type="text" id="registerName" placeholder="Full name" required>
                 <input type="email" id="registerEmail" placeholder="Email address" required>
                 <input type="password" id="registerPassword" placeholder="Password" required>
@@ -45,6 +55,14 @@
     </section>
 
     <script>
+        function switchAuthTab(tabName) {
+            const isLogin = tabName === "login";
+            document.getElementById("loginForm").classList.toggle("active", isLogin);
+            document.getElementById("registerForm").classList.toggle("active", !isLogin);
+            document.getElementById("loginTab").classList.toggle("active", isLogin);
+            document.getElementById("registerTab").classList.toggle("active", !isLogin);
+        }
+
         function showAuthMessage(message) {
             document.getElementById("authMessage").textContent = message;
         }
