@@ -207,6 +207,16 @@ form {
   display: grid;
 }
 
+.auth-switch {
+  color: #64748b;
+  margin: 4px 0 0;
+}
+
+.auth-switch .text-button {
+  display: inline;
+  margin-left: 4px;
+}
+
 .auth-message {
   margin: 0 8% 28px;
 }
