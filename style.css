@@ -39,6 +39,15 @@ button {
   padding: 10px 16px;
 }
 
+.nav-link {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 8px;
+  color: white;
+  padding: 10px 16px;
+  text-decoration: none;
+}
+
 .hero,
 .filters,
 main,
@@ -150,9 +159,25 @@ form {
   gap: 12px;
 }
 
+.auth-layout {
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+}
+
+.auth-panel {
+  background: white;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  padding: 22px;
+}
+
+.auth-message {
+  margin: 0 8% 28px;
+}
+
 @media (max-width: 760px) {
   .hero,
-  main {
+  main,
+  .auth-layout {
     grid-template-columns: 1fr;
   }
 
