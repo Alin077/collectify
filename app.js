@@ -105,6 +105,29 @@ async function loadListings() {
   showItems();
 }
 
+async function loadCurrentUser() {
+  const profile = document.getElementById("profile");
+  const storedName = localStorage.getItem("collectifyUserName");
+
+  if (storedName) {
+    profile.textContent = storedName;
+  }
+
+  try {
+    const data = await apiRequest("/auth/me");
+
+    if (data.user) {
+      localStorage.setItem("collectifyUserName", data.user.name);
+      localStorage.setItem("collectifyUserEmail", data.user.email);
+      profile.textContent = data.user.name;
+    }
+  } catch (error) {
+    if (!storedName) {
+      profile.textContent = "Guest User";
+    }
+  }
+}
+
 function showItems() {
   const list = document.getElementById("itemList");
   const totalListings = document.getElementById("totalListings");
@@ -168,6 +191,7 @@ function addNotification(message) {
 }
 
 function loginUser() {
+  localStorage.setItem("collectifyUserName", "Alin077");
   document.getElementById("profile").textContent = "Alin077";
   addNotification("Signed in as Alin077.");
 }
@@ -210,5 +234,5 @@ async function addItem() {
   showItems();
 }
 
+loadCurrentUser();
 loadListings();
-
