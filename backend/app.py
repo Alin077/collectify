@@ -10,7 +10,7 @@ from routes.listing_routes import listing_routes
 def create_app():
     app = Flask(__name__)
     app.config["SECRET_KEY"] = SECRET_KEY
-    CORS(app)
+    CORS(app, supports_credentials=True)
     init_db()
     app.register_blueprint(auth_routes)
     app.register_blueprint(listing_routes)

@@ -32,6 +32,18 @@ def create_listing():
             "fields": missing_fields
         }), 400
 
+    try:
+        price = int(data["price"])
+    except (TypeError, ValueError):
+        return jsonify({
+            "error": "Price must be a whole number."
+        }), 400
+
+    if price <= 0:
+        return jsonify({
+            "error": "Price must be greater than zero."
+        }), 400
+
     with get_connection() as connection:
         cursor = connection.execute(
             """
@@ -42,7 +54,7 @@ def create_listing():
                 data["name"],
                 data["category"],
                 data["rarity"],
-                int(data["price"]),
+                price,
                 data["seller"],
                 float(data.get("rating", 5)),
                 int(data.get("time_left", 300)),
@@ -50,8 +62,16 @@ def create_listing():
             )
         )
         connection.commit()
+        listing = connection.execute(
+            """
+            SELECT id, name, category, rarity, price, seller, rating, time_left, image
+            FROM listings
+            WHERE id = ?
+            """,
+            (cursor.lastrowid,)
+        ).fetchone()
 
     return jsonify({
-        "id": cursor.lastrowid,
+        "listing": row_to_dict(listing),
         "message": "Listing created successfully."
     }), 201

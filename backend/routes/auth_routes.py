@@ -77,3 +77,27 @@ def logout():
     return jsonify({
         "message": "Logged out successfully."
     })
+
+
+@auth_routes.get("/me")
+def current_user():
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return jsonify({
+            "user": None
+        })
+
+    with get_connection() as connection:
+        user = connection.execute(
+            """
+            SELECT id, name, email, role
+            FROM users
+            WHERE id = ?
+            """,
+            (user_id,)
+        ).fetchone()
+
+    return jsonify({
+        "user": row_to_dict(user)
+    })
