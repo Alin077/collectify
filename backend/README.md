@@ -2,7 +2,7 @@
 
 This folder contains the Flask backend for the Collectify coursework project.
 
-## Planned Responsibilities
+## Responsibilities
 
 - Serve API routes for authentication
 - Store collectible listings in SQLite
@@ -15,3 +15,14 @@ This folder contains the Flask backend for the Collectify coursework project.
 pip install -r requirements.txt
 python backend/app.py
 ```
+
+The app creates `backend/collectify.db` automatically and seeds demo listings when the listings table is empty.
+
+## API Routes
+
+- `GET /api/listings` returns auction listings.
+- `POST /api/listings` creates a listing with `name`, `category`, `rarity`, `price` and `seller`.
+- `POST /api/auth/register` creates an account and starts a session.
+- `POST /api/auth/login` starts a session for an existing account.
+- `GET /api/auth/me` returns the current session user.
+- `POST /api/auth/logout` clears the current session.

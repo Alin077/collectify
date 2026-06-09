@@ -1,20 +1,35 @@
 # Collectify
 
-Collectify is a coursework web app for browsing and managing rare collectible auctions. The current version is a frontend prototype built with HTML, CSS, and JavaScript.
+Collectify is a coursework web app for browsing and managing rare collectible auctions. The current version combines a HTML, CSS and JavaScript frontend with a Flask API for listings and account access.
 
 ## Current Features
 
-- Live auction item cards
+- Live auction item cards loaded from the backend API
 - Search by collectible name
 - Filter by category and rarity
 - Wishlist actions
-- Simple profile state
-- Listing creation form
+- Profile state from login/register data
+- Listing creation form with backend save support
 - Admin summary panel
+- SQLite seed data for demo collectible auctions
 
-## Planned Coursework Direction
+## Local Setup
 
-The next phase is to turn Collectify into a fuller web app with a Python backend, database storage, user authentication, and real listing management.
+Install dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Start the Flask backend:
+
+```powershell
+python backend/app.py
+```
+
+Open `index.html` in the browser for the auction page, or open `auth.html` to register and log in. The frontend expects the API at `http://127.0.0.1:5000/api`.
+
+If the backend is not running, the auction page falls back to demo listings so the interface can still be previewed.
 
 ## Suggested Structure
 
@@ -35,11 +50,10 @@ backend/
 
 ## Next Steps
 
-- Add persistent storage for listings
-- Add register and login pages
-- Create backend API routes
-- Connect the frontend to backend data
+- Add persistent wishlist routes
 - Add admin controls for listings and users
+- Show signed-in-only actions for listing creation
+- Add automated backend route tests
 
 ## Image Sources
 

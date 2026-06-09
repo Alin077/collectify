@@ -3,5 +3,6 @@ venv/
 __pycache__/
 *.pyc
 .env
+backend/collectify.db
 .DS_Store
 Thumbs.db
