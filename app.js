@@ -1,4 +1,6 @@
-let items = [
+const API_BASE = "http://127.0.0.1:5000/api";
+
+const fallbackItems = [
   {
     name: "Vintage Thangka Painting (Hand-Painted, 1960s)",
     category: "Religious Art",
@@ -51,11 +53,57 @@ let items = [
   }
 ];
 
+let items = fallbackItems.map(normalizeListing);
+
 const money = new Intl.NumberFormat("en-NP", {
   style: "currency",
   currency: "NPR",
   maximumFractionDigits: 0
 });
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    },
+    ...options
+  });
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error || "The request could not be completed.");
+  }
+
+  return data;
+}
+
+function normalizeListing(listing) {
+  return {
+    id: listing.id,
+    name: listing.name,
+    category: listing.category,
+    rarity: listing.rarity,
+    price: Number(listing.price),
+    seller: listing.seller,
+    rating: Number(listing.rating || 5),
+    time: Number(listing.time_left ?? listing.time ?? 300),
+    image: listing.image || ""
+  };
+}
+
+async function loadListings() {
+  try {
+    const listings = await apiRequest("/listings");
+    items = listings.map(normalizeListing);
+  } catch (error) {
+    items = fallbackItems.map(normalizeListing);
+    addNotification("Showing demo listings because the backend is offline.");
+  }
+
+  showItems();
+}
 
 function showItems() {
   const list = document.getElementById("itemList");
@@ -151,5 +199,5 @@ function addItem() {
   showItems();
 }
 
-showItems();
+loadListings();
 
