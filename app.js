@@ -172,30 +172,41 @@ function loginUser() {
   addNotification("Signed in as Alin077.");
 }
 
-function addItem() {
+async function addItem() {
   const name = document.getElementById("name").value.trim();
   const price = Number(document.getElementById("price").value);
   const category = document.getElementById("category").value;
   const rarity = document.getElementById("rarity").value;
 
-  if (!name || !price) {
-    addNotification("Add an item name and price before listing.");
+  if (!name || price <= 0) {
+    addNotification("Add an item name and a valid price before listing.");
     return;
   }
 
-  items.unshift({
+  const listing = {
     name,
     category,
     rarity,
     price,
-    seller: "Alin077",
+    seller: localStorage.getItem("collectifyUserName") || "Guest Seller",
     rating: 5,
-    time: 300,
+    time_left: 300,
     image: ""
-  });
+  };
+
+  try {
+    const data = await apiRequest("/listings", {
+      method: "POST",
+      body: JSON.stringify(listing)
+    });
+    items.unshift(normalizeListing(data.listing));
+    addNotification(`${name} was saved to live auctions.`);
+  } catch (error) {
+    items.unshift(normalizeListing(listing));
+    addNotification(`${name} was added locally. Start the backend to save it permanently.`);
+  }
 
   document.getElementById("listingForm").reset();
-  addNotification(`${name} was added to live auctions.`);
   showItems();
 }
 
