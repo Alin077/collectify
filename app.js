@@ -197,6 +197,19 @@ function renderWishlist() {
   });
 }
 
+function watchItemLocally(item) {
+  const alreadyWatched = wishlistItems.some((wishlistItem) => {
+    return wishlistItem.id === item.id || wishlistItem.name === item.name;
+  });
+
+  if (alreadyWatched) {
+    return false;
+  }
+
+  wishlistItems.unshift(item);
+  return true;
+}
+
 async function loadWishlist() {
   try {
     const data = await apiRequest("/wishlist");
@@ -258,25 +271,31 @@ function showItems() {
 async function addToWishlist(index) {
   const item = items[index];
 
+  if (!item) {
+    addNotification("This listing could not be added to your wishlist.");
+    return;
+  }
+
+  const wasAdded = watchItemLocally(item);
+  renderWishlist();
+
+  if (wasAdded) {
+    addNotification(`${item.name} was added to your wishlist.`);
+  } else {
+    addNotification(`${item.name} is already in your wishlist.`);
+  }
+
   if (item.id) {
     try {
       await apiRequest("/wishlist", {
         method: "POST",
         body: JSON.stringify({ listing_id: item.id })
       });
-      addNotification(`${item.name} was added to your wishlist.`);
       await loadWishlist();
-      return;
     } catch (error) {
-      addNotification(error.message);
+      addNotification("Wishlist saved on this page. Log in to save it permanently.");
     }
   }
-
-  if (!wishlistItems.some((wishlistItem) => wishlistItem.name === item.name)) {
-    wishlistItems.unshift(item);
-  }
-
-  renderWishlist();
 }
 
 function addNotification(message) {
