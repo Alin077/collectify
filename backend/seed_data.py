@@ -48,14 +48,72 @@ DEFAULT_LISTINGS = [
         "rating": 4.7,
         "time_left": 300,
         "image": "https://covers.openlibrary.org/b/olid/OL25422917M-L.jpg"
+    },
+    {
+        "name": "Handmade Paubha Painting of Tara",
+        "category": "Religious Art",
+        "rarity": "Very Rare",
+        "price": 62000,
+        "seller": "Patan Heritage Arts",
+        "rating": 4.8,
+        "time_left": 210,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Paubha%20of%20Vasudhara.jpg"
+    },
+    {
+        "name": "Panchaloha Offering Bowl Set",
+        "category": "Memorabilia",
+        "rarity": "Very Rare",
+        "price": 32000,
+        "seller": "Bhaktapur Antique House",
+        "rating": 4.5,
+        "time_left": 260,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Bronze%20ritual%20vessels%20Nepal.jpg"
+    },
+    {
+        "name": "Rana Era Family Photograph Album",
+        "category": "Photographs",
+        "rarity": "Extremely Rare",
+        "price": 78000,
+        "seller": "Archive Nepal Studio",
+        "rating": 4.9,
+        "time_left": 75,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Chandra%20Shumsher%20Jang%20Bahadur%20Rana.jpg"
+    },
+    {
+        "name": "Early Nepal Postal Stamp Set",
+        "category": "Memorabilia",
+        "rarity": "Very Rare",
+        "price": 15500,
+        "seller": "Kathmandu Philately Club",
+        "rating": 4.6,
+        "time_left": 360,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Nepal%20stamp%201907.jpg"
+    },
+    {
+        "name": "Palm Leaf Buddhist Manuscript Pages",
+        "category": "Books",
+        "rarity": "Extremely Rare",
+        "price": 120000,
+        "seller": "Himalayan Manuscript Trust",
+        "rating": 5,
+        "time_left": 45,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Palm-leaf%20manuscript.jpg"
     }
 ]
 
 
 def seed_default_listings(connection):
-    listing_count = connection.execute("SELECT COUNT(*) FROM listings").fetchone()[0]
+    existing_names = {
+        row["name"]
+        for row in connection.execute("SELECT name FROM listings").fetchall()
+    }
+    new_listings = [
+        listing
+        for listing in DEFAULT_LISTINGS
+        if listing["name"] not in existing_names
+    ]
 
-    if listing_count:
+    if not new_listings:
         return
 
     connection.executemany(
@@ -63,5 +121,5 @@ def seed_default_listings(connection):
         INSERT INTO listings (name, category, rarity, price, seller, rating, time_left, image)
         VALUES (:name, :category, :rarity, :price, :seller, :rating, :time_left, :image)
         """,
-        DEFAULT_LISTINGS
+        new_listings
     )
