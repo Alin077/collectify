@@ -98,6 +98,66 @@ DEFAULT_LISTINGS = [
         "rating": 5,
         "time_left": 45,
         "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Palm-leaf%20manuscript.jpg"
+    },
+    {
+        "name": "Hand-Carved Wooden Prayer Wheel",
+        "category": "Religious Art",
+        "rarity": "Common",
+        "price": 4500,
+        "seller": "Boudha Craft Store",
+        "rating": 4.4,
+        "time_left": 420,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath:Prayer%20wheels%20Swayambhunath%20Kathmandu.jpg"
+    },
+    {
+        "name": "Nepal Tourism Poster Reprint",
+        "category": "Memorabilia",
+        "rarity": "Common",
+        "price": 2800,
+        "seller": "Thamel Poster House",
+        "rating": 4.3,
+        "time_left": 390,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath:Nepal%20Tourism%20Board%20Kathmandu.jpg"
+    },
+    {
+        "name": "Kathmandu Valley Photo Print Set",
+        "category": "Photographs",
+        "rarity": "Uncommon",
+        "price": 7200,
+        "seller": "Heritage Lens Nepal",
+        "rating": 4.5,
+        "time_left": 330,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath:Patan%20Durbar%20Square%2C%20Kathmandu%20Valley%2C%20Nepal.jpg"
+    },
+    {
+        "name": "Traditional Dhaka Topi Collectors Piece",
+        "category": "Memorabilia",
+        "rarity": "Uncommon",
+        "price": 6500,
+        "seller": "Dhaka Heritage Wear",
+        "rating": 4.6,
+        "time_left": 270,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath:Dhaka%20topi.jpg"
+    },
+    {
+        "name": "Commemorative Everest Expedition Coin",
+        "category": "Coins",
+        "rarity": "Rare",
+        "price": 22000,
+        "seller": "Summit Mint Collectors",
+        "rating": 4.7,
+        "time_left": 160,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath:Mount%20Everest%20as%20seen%20from%20Drukair2%20PLW%20edit.jpg"
+    },
+    {
+        "name": "Signed Nepali Poetry Chapbook",
+        "category": "Books",
+        "rarity": "Rare",
+        "price": 12500,
+        "seller": "Lalitpur Literary Finds",
+        "rating": 4.8,
+        "time_left": 225,
+        "image": "https://commons.wikimedia.org/wiki/Special:FilePath:Bookshelf.jpg"
     }
 ]
 
