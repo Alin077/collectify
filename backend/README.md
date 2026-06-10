@@ -26,3 +26,6 @@ The app creates `backend/collectify.db` automatically and seeds demo listings wh
 - `POST /api/auth/login` starts a session for an existing account.
 - `GET /api/auth/me` returns the current session user.
 - `POST /api/auth/logout` clears the current session.
+- `GET /api/wishlist` returns the current user's watched listings.
+- `POST /api/wishlist` adds a listing with `listing_id`.
+- `DELETE /api/wishlist/<listing_id>` removes a watched listing.

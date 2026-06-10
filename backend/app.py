@@ -5,6 +5,7 @@ from config import SECRET_KEY
 from database import init_db
 from routes.auth_routes import auth_routes
 from routes.listing_routes import listing_routes
+from routes.wishlist_routes import wishlist_routes
 
 
 def create_app():
@@ -14,6 +15,7 @@ def create_app():
     init_db()
     app.register_blueprint(auth_routes)
     app.register_blueprint(listing_routes)
+    app.register_blueprint(wishlist_routes)
 
     @app.get("/")
     def health_check():
