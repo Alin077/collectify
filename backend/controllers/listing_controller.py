@@ -3,6 +3,19 @@ from flask import jsonify, request
 from database import get_connection, row_to_dict
 
 
+DEFAULT_IMAGES_BY_CATEGORY = {
+    "Religious Art": "https://commons.wikimedia.org/wiki/Special:FilePath/Swayambhunath%20prayer%20wheels.jpg",
+    "Coins": "https://commons.wikimedia.org/wiki/Special:FilePath:Nepalese%20coins.jpg",
+    "Photographs": "https://commons.wikimedia.org/wiki/Special:FilePath:Kathmandu%20Durbar%20Square%20old%20photo.jpg",
+    "Memorabilia": "https://commons.wikimedia.org/wiki/Special:FilePath:Prayer%20flags%20Nepal.jpg",
+    "Books": "https://commons.wikimedia.org/wiki/Special:FilePath:Bookshelf.jpg"
+}
+
+
+def get_default_image(category):
+    return DEFAULT_IMAGES_BY_CATEGORY.get(category, DEFAULT_IMAGES_BY_CATEGORY["Memorabilia"])
+
+
 def get_listings():
     with get_connection() as connection:
         rows = connection.execute(
@@ -39,6 +52,8 @@ def create_listing():
             "error": "Price must be greater than zero."
         }), 400
 
+    image = data.get("image") or get_default_image(data["category"])
+
     with get_connection() as connection:
         cursor = connection.execute(
             """
@@ -53,7 +68,7 @@ def create_listing():
                 data["seller"],
                 float(data.get("rating", 5)),
                 int(data.get("time_left", 300)),
-                data.get("image", "")
+                image
             )
         )
         connection.commit()

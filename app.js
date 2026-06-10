@@ -163,6 +163,14 @@ const fallbackItems = [
   }
 ];
 
+const defaultImagesByCategory = {
+  "Religious Art": "https://commons.wikimedia.org/wiki/Special:FilePath/Swayambhunath%20prayer%20wheels.jpg",
+  Coins: "https://commons.wikimedia.org/wiki/Special:FilePath:Nepalese%20coins.jpg",
+  Photographs: "https://commons.wikimedia.org/wiki/Special:FilePath:Kathmandu%20Durbar%20Square%20old%20photo.jpg",
+  Memorabilia: "https://commons.wikimedia.org/wiki/Special:FilePath:Prayer%20flags%20Nepal.jpg",
+  Books: "https://commons.wikimedia.org/wiki/Special:FilePath:Bookshelf.jpg"
+};
+
 let items = fallbackItems.map(normalizeListing);
 let wishlistItems = [];
 const LOCAL_WISHLIST_KEY = "collectifyWishlist";
@@ -196,16 +204,18 @@ async function apiRequest(path, options = {}) {
 }
 
 function normalizeListing(listing) {
+  const category = listing.category;
+
   return {
     id: listing.id,
     name: listing.name,
-    category: listing.category,
+    category,
     rarity: listing.rarity,
     price: Number(listing.price),
     seller: listing.seller,
     rating: Number(listing.rating || 5),
     time: Number(listing.time_left ?? listing.time ?? 300),
-    image: listing.image || ""
+    image: listing.image || defaultImagesByCategory[category] || defaultImagesByCategory.Memorabilia
   };
 }
 
@@ -741,7 +751,7 @@ async function addItem() {
     seller: localStorage.getItem("collectifyUserName") || "Guest Seller",
     rating: 5,
     time_left: 300,
-    image: ""
+    image: defaultImagesByCategory[category] || defaultImagesByCategory.Memorabilia
   };
 
   try {
