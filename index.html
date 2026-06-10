@@ -128,6 +128,26 @@
         <p>Admin can manage users and remove fake listings.</p>
     </section>
 
+    <div class="modal-backdrop" id="detailModal" aria-hidden="true">
+        <section class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+            <button class="modal-close" type="button" onclick="closeDetailModal()" aria-label="Close item details">
+                X
+            </button>
+            <div id="detailContent"></div>
+        </section>
+    </div>
+
+    <div class="modal-backdrop" id="confirmModal" aria-hidden="true">
+        <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+            <h2 id="confirmTitle">Remove Listing?</h2>
+            <p id="confirmMessage">This listing will be removed from collections.</p>
+            <div class="confirm-actions">
+                <button class="text-button" type="button" onclick="closeConfirmModal()">Cancel</button>
+                <button class="danger-button" type="button" onclick="confirmRemoveListing()">Remove</button>
+            </div>
+        </section>
+    </div>
+
     <script src="app.js"></script>
 
 </body>

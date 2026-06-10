@@ -108,6 +108,8 @@ let wishlistItems = [];
 const LOCAL_WISHLIST_KEY = "collectifyWishlist";
 const LOCAL_REMOVED_LISTINGS_KEY = "collectifyRemovedListings";
 let removedListingKeys = [];
+let pendingRemoveIndex = null;
+let openDetailIndex = null;
 
 const money = new Intl.NumberFormat("en-NP", {
   style: "currency",
@@ -162,6 +164,37 @@ function escapeHtml(value) {
     };
     return entities[character];
   });
+}
+
+function formatTimeLeft(minutes) {
+  if (minutes <= 0) {
+    return "Ended";
+  }
+
+  if (minutes < 60) {
+    return `${minutes} min left`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  if (!remainingMinutes) {
+    return `${hours} hr left`;
+  }
+
+  return `${hours} hr ${remainingMinutes} min left`;
+}
+
+function getAuctionStatus(item) {
+  if (item.time <= 0) {
+    return "Closed";
+  }
+
+  if (item.time <= 60) {
+    return "Ending Soon";
+  }
+
+  return "Live";
 }
 
 function isWatched(item) {
@@ -338,6 +371,17 @@ function showItems() {
   });
 
   totalListings.textContent = items.length;
+
+  if (!filteredItems.length) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <h3>No matching collectibles found</h3>
+        <p>Try another search term, category or rarity filter.</p>
+      </div>
+    `;
+    return;
+  }
+
   list.innerHTML = filteredItems
     .map((item) => {
       const originalIndex = items.indexOf(item);
@@ -346,9 +390,11 @@ function showItems() {
       const itemCategory = escapeHtml(item.category);
       const itemRarity = escapeHtml(item.rarity);
       const itemSeller = escapeHtml(item.seller);
+      const timeLeft = formatTimeLeft(item.time);
+      const status = getAuctionStatus(item);
       return `
-      <article class="item-card">
-        <button class="remove-item" type="button" onclick="removeListing(${originalIndex})" aria-label="Remove ${itemName}">
+      <article class="item-card" onclick="openDetailModal(${originalIndex})" tabindex="0" onkeydown="openDetailFromKeyboard(event, ${originalIndex})">
+        <button class="remove-item" type="button" onclick="requestRemoveListing(event, ${originalIndex})" aria-label="Remove ${itemName}">
           X
         </button>
         <div class="item-image">${item.image ? `<img src="${escapeHtml(item.image)}" alt="${itemName}" loading="lazy">` : itemRarity}</div>
@@ -356,16 +402,19 @@ function showItems() {
           <span>${itemCategory} / ${itemRarity}</span>
           <h3>${itemName}</h3>
           <p>${money.format(item.price)} current bid</p>
-          <small>Seller ${itemSeller} - ${item.rating} rating - ${item.time} min left</small>
+          <small>Seller ${itemSeller} - ${item.rating} rating - ${timeLeft}</small>
+          <div class="item-meta">
+            <span>${status}</span>
+          </div>
           <div class="watch-action">
-            <button class="watch-button ${watched ? "watched" : ""}" type="button" onclick="addToWishlist(${originalIndex})">
+            <button class="watch-button ${watched ? "watched" : ""}" type="button" onclick="addToWishlist(event, ${originalIndex})">
               ${watched ? "Watching" : "Watch"}
             </button>
             <div class="watch-info" role="tooltip">
               <strong>${itemName}</strong>
               <span>${itemRarity} ${itemCategory}</span>
               <span>${money.format(item.price)} current bid</span>
-              <span>${item.time} minutes left from ${itemSeller}</span>
+              <span>${timeLeft} from ${itemSeller}</span>
             </div>
           </div>
         </div>
@@ -373,6 +422,93 @@ function showItems() {
     `;
     })
     .join("");
+}
+
+function openDetailFromKeyboard(event, index) {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openDetailModal(index);
+  }
+}
+
+function openDetailModal(index) {
+  const item = items[index];
+
+  if (!item) {
+    return;
+  }
+
+  const modal = document.getElementById("detailModal");
+  const content = document.getElementById("detailContent");
+  const itemName = escapeHtml(item.name);
+  const itemCategory = escapeHtml(item.category);
+  const itemRarity = escapeHtml(item.rarity);
+  const itemSeller = escapeHtml(item.seller);
+  const timeLeft = formatTimeLeft(item.time);
+  const status = getAuctionStatus(item);
+  const watched = isWatched(item);
+  openDetailIndex = index;
+
+  content.innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-image">
+        ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${itemName}">` : itemRarity}
+      </div>
+      <div class="detail-body">
+        <span class="detail-status">${status}</span>
+        <h2 id="detailTitle">${itemName}</h2>
+        <p>${itemCategory} / ${itemRarity}</p>
+        <dl>
+          <div><dt>Current Bid</dt><dd>${money.format(item.price)}</dd></div>
+          <div><dt>Seller</dt><dd>${itemSeller}</dd></div>
+          <div><dt>Rating</dt><dd>${item.rating}</dd></div>
+          <div><dt>Time Left</dt><dd>${timeLeft}</dd></div>
+        </dl>
+        <button class="watch-button ${watched ? "watched" : ""}" type="button" onclick="addToWishlist(event, ${index})">
+          ${watched ? "Watching" : "Watch"}
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.classList.add("active");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeDetailModal() {
+  const modal = document.getElementById("detailModal");
+  openDetailIndex = null;
+  modal.classList.remove("active");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+function requestRemoveListing(event, index) {
+  event.stopPropagation();
+  const item = items[index];
+
+  if (!item) {
+    addNotification("This listing could not be removed.");
+    return;
+  }
+
+  pendingRemoveIndex = index;
+  document.getElementById("confirmMessage").textContent = `Remove ${item.name} from collections?`;
+  const modal = document.getElementById("confirmModal");
+  modal.classList.add("active");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeConfirmModal() {
+  pendingRemoveIndex = null;
+  const modal = document.getElementById("confirmModal");
+  modal.classList.remove("active");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+async function confirmRemoveListing() {
+  const index = pendingRemoveIndex;
+  closeConfirmModal();
+  await removeListing(index);
 }
 
 async function removeListing(index) {
@@ -401,7 +537,16 @@ async function removeListing(index) {
   }
 }
 
-async function addToWishlist(index) {
+async function addToWishlist(event, index) {
+  if (typeof event === "number") {
+    index = event;
+    event = null;
+  }
+
+  if (event) {
+    event.stopPropagation();
+  }
+
   const item = items[index];
 
   if (!item) {
@@ -431,6 +576,40 @@ async function addToWishlist(index) {
       addNotification("Wishlist saved on this page. Log in to save it permanently.");
     }
   }
+}
+
+function updateAuctionTimers() {
+  items = items.map((item) => ({
+    ...item,
+    time: Math.max(0, item.time - 1)
+  }));
+
+  showItems();
+
+  if (openDetailIndex !== null) {
+    openDetailModal(openDetailIndex);
+  }
+}
+
+function setupModalControls() {
+  document.getElementById("detailModal").addEventListener("click", (event) => {
+    if (event.target.id === "detailModal") {
+      closeDetailModal();
+    }
+  });
+
+  document.getElementById("confirmModal").addEventListener("click", (event) => {
+    if (event.target.id === "confirmModal") {
+      closeConfirmModal();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeDetailModal();
+      closeConfirmModal();
+    }
+  });
 }
 
 function addNotification(message) {
@@ -487,3 +666,5 @@ async function addItem() {
 loadCurrentUser();
 loadListings();
 loadWishlist();
+setupModalControls();
+setInterval(updateAuctionTimers, 60000);
