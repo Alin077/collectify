@@ -54,6 +54,7 @@ const fallbackItems = [
 ];
 
 let items = fallbackItems.map(normalizeListing);
+let wishlistItems = [];
 
 const money = new Intl.NumberFormat("en-NP", {
   style: "currency",
@@ -128,6 +129,35 @@ async function loadCurrentUser() {
   }
 }
 
+function renderWishlist() {
+  const wishlist = document.getElementById("wishlist");
+  wishlist.innerHTML = "";
+
+  if (!wishlistItems.length) {
+    const entry = document.createElement("li");
+    entry.textContent = "No watched listings yet.";
+    wishlist.appendChild(entry);
+    return;
+  }
+
+  wishlistItems.forEach((item) => {
+    const entry = document.createElement("li");
+    entry.textContent = item.name;
+    wishlist.appendChild(entry);
+  });
+}
+
+async function loadWishlist() {
+  try {
+    const data = await apiRequest("/wishlist");
+    wishlistItems = data.map(normalizeListing);
+  } catch (error) {
+    wishlistItems = [];
+  }
+
+  renderWishlist();
+}
+
 function showItems() {
   const list = document.getElementById("itemList");
   const totalListings = document.getElementById("totalListings");
@@ -175,12 +205,28 @@ function showItems() {
     .join("");
 }
 
-function addToWishlist(index) {
-  const wishlist = document.getElementById("wishlist");
+async function addToWishlist(index) {
   const item = items[index];
-  const entry = document.createElement("li");
-  entry.textContent = item.name;
-  wishlist.appendChild(entry);
+
+  if (item.id) {
+    try {
+      await apiRequest("/wishlist", {
+        method: "POST",
+        body: JSON.stringify({ listing_id: item.id })
+      });
+      addNotification(`${item.name} was added to your wishlist.`);
+      await loadWishlist();
+      return;
+    } catch (error) {
+      addNotification(error.message);
+    }
+  }
+
+  if (!wishlistItems.some((wishlistItem) => wishlistItem.name === item.name)) {
+    wishlistItems.unshift(item);
+  }
+
+  renderWishlist();
 }
 
 function addNotification(message) {
@@ -236,3 +282,4 @@ async function addItem() {
 
 loadCurrentUser();
 loadListings();
+loadWishlist();
