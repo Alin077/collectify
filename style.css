@@ -124,7 +124,7 @@ main {
 }
 
 .item-card {
-  overflow: hidden;
+  position: relative;
 }
 
 .item-image {
@@ -159,6 +159,63 @@ aside,
   color: #64748b;
   display: block;
   margin-bottom: 14px;
+}
+
+.watch-action {
+  display: inline-block;
+  position: relative;
+}
+
+.watch-button {
+  min-width: 96px;
+}
+
+.watch-button.watched {
+  background: #172033;
+}
+
+.watch-info {
+  background: #172033;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  bottom: calc(100% + 10px);
+  box-shadow: 0 16px 35px rgba(15, 23, 42, 0.24);
+  color: white;
+  display: grid;
+  gap: 5px;
+  left: 0;
+  min-width: 230px;
+  opacity: 0;
+  padding: 12px;
+  pointer-events: none;
+  position: absolute;
+  transform: translateY(6px);
+  transition: opacity 160ms ease, transform 160ms ease;
+  visibility: hidden;
+  z-index: 5;
+}
+
+.watch-info span {
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.watch-action:hover .watch-info,
+.watch-action:focus-within .watch-info {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.wishlist-entry {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.wishlist-entry span {
+  color: #64748b;
+  font-size: 13px;
 }
 
 form {

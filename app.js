@@ -105,6 +105,7 @@ const fallbackItems = [
 
 let items = fallbackItems.map(normalizeListing);
 let wishlistItems = [];
+const LOCAL_WISHLIST_KEY = "collectifyWishlist";
 
 const money = new Intl.NumberFormat("en-NP", {
   style: "currency",
@@ -142,6 +143,46 @@ function normalizeListing(listing) {
     time: Number(listing.time_left ?? listing.time ?? 300),
     image: listing.image || ""
   };
+}
+
+function getItemKey(item) {
+  return item.id ? `id:${item.id}` : `name:${item.name}`;
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    };
+    return entities[character];
+  });
+}
+
+function isWatched(item) {
+  const itemKey = getItemKey(item);
+  return wishlistItems.some((wishlistItem) => getItemKey(wishlistItem) === itemKey);
+}
+
+function saveLocalWishlist() {
+  localStorage.setItem(LOCAL_WISHLIST_KEY, JSON.stringify(wishlistItems));
+}
+
+function loadLocalWishlist() {
+  const savedWishlist = localStorage.getItem(LOCAL_WISHLIST_KEY);
+
+  if (!savedWishlist) {
+    return;
+  }
+
+  try {
+    wishlistItems = JSON.parse(savedWishlist).map(normalizeListing);
+  } catch (error) {
+    wishlistItems = [];
+  }
 }
 
 async function loadListings() {
@@ -192,33 +233,46 @@ function renderWishlist() {
 
   wishlistItems.forEach((item) => {
     const entry = document.createElement("li");
-    entry.textContent = item.name;
+    entry.className = "wishlist-entry";
+    entry.innerHTML = `
+      <strong>${escapeHtml(item.name)}</strong>
+      <span>${escapeHtml(item.category)} / ${money.format(item.price)}</span>
+    `;
     wishlist.appendChild(entry);
   });
 }
 
 function watchItemLocally(item) {
-  const alreadyWatched = wishlistItems.some((wishlistItem) => {
-    return wishlistItem.id === item.id || wishlistItem.name === item.name;
-  });
-
-  if (alreadyWatched) {
+  if (isWatched(item)) {
     return false;
   }
 
   wishlistItems.unshift(item);
+  saveLocalWishlist();
   return true;
 }
 
 async function loadWishlist() {
+  loadLocalWishlist();
+  renderWishlist();
+
   try {
     const data = await apiRequest("/wishlist");
-    wishlistItems = data.map(normalizeListing);
+    const syncedItems = data.map(normalizeListing);
+
+    syncedItems.forEach((item) => {
+      if (!isWatched(item)) {
+        wishlistItems.push(item);
+      }
+    });
+
+    saveLocalWishlist();
   } catch (error) {
-    wishlistItems = [];
+    return;
   }
 
   renderWishlist();
+  showItems();
 }
 
 function showItems() {
@@ -252,15 +306,30 @@ function showItems() {
   list.innerHTML = filteredItems
     .map((item) => {
       const originalIndex = items.indexOf(item);
+      const watched = isWatched(item);
+      const itemName = escapeHtml(item.name);
+      const itemCategory = escapeHtml(item.category);
+      const itemRarity = escapeHtml(item.rarity);
+      const itemSeller = escapeHtml(item.seller);
       return `
       <article class="item-card">
-        <div class="item-image">${item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy">` : item.rarity}</div>
+        <div class="item-image">${item.image ? `<img src="${escapeHtml(item.image)}" alt="${itemName}" loading="lazy">` : itemRarity}</div>
         <div class="item-content">
-          <span>${item.category} / ${item.rarity}</span>
-          <h3>${item.name}</h3>
+          <span>${itemCategory} / ${itemRarity}</span>
+          <h3>${itemName}</h3>
           <p>${money.format(item.price)} current bid</p>
-          <small>Seller ${item.seller} - ${item.rating} rating - ${item.time} min left</small>
-          <button type="button" onclick="addToWishlist(${originalIndex})">Watch</button>
+          <small>Seller ${itemSeller} - ${item.rating} rating - ${item.time} min left</small>
+          <div class="watch-action">
+            <button class="watch-button ${watched ? "watched" : ""}" type="button" onclick="addToWishlist(${originalIndex})">
+              ${watched ? "Watching" : "Watch"}
+            </button>
+            <div class="watch-info" role="tooltip">
+              <strong>${itemName}</strong>
+              <span>${itemRarity} ${itemCategory}</span>
+              <span>${money.format(item.price)} current bid</span>
+              <span>${item.time} minutes left from ${itemSeller}</span>
+            </div>
+          </div>
         </div>
       </article>
     `;
@@ -284,6 +353,8 @@ async function addToWishlist(index) {
   } else {
     addNotification(`${item.name} is already in your wishlist.`);
   }
+
+  showItems();
 
   if (item.id) {
     try {
