@@ -127,6 +127,30 @@ main {
   position: relative;
 }
 
+.remove-item {
+  align-items: center;
+  background: rgba(23, 32, 51, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  display: flex;
+  font-size: 12px;
+  font-weight: 700;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 28px;
+  z-index: 4;
+}
+
+.remove-item:hover,
+.remove-item:focus {
+  background: #b91c1c;
+}
+
 .item-image {
   aspect-ratio: 4 / 3;
   align-items: center;

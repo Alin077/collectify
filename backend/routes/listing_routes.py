@@ -14,3 +14,8 @@ def get_listings():
 @listing_routes.post("")
 def create_listing():
     return listing_controller.create_listing()
+
+
+@listing_routes.delete("/<int:listing_id>")
+def delete_listing(listing_id):
+    return listing_controller.delete_listing(listing_id)

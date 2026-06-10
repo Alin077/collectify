@@ -22,6 +22,7 @@ The app creates `backend/collectify.db` automatically and seeds demo listings wh
 
 - `GET /api/listings` returns auction listings.
 - `POST /api/listings` creates a listing with `name`, `category`, `rarity`, `price` and `seller`.
+- `DELETE /api/listings/<listing_id>` removes a listing and related wishlist records.
 - `POST /api/auth/register` creates an account and starts a session.
 - `POST /api/auth/login` starts a session for an existing account.
 - `GET /api/auth/me` returns the current session user.

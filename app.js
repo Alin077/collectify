@@ -106,6 +106,8 @@ const fallbackItems = [
 let items = fallbackItems.map(normalizeListing);
 let wishlistItems = [];
 const LOCAL_WISHLIST_KEY = "collectifyWishlist";
+const LOCAL_REMOVED_LISTINGS_KEY = "collectifyRemovedListings";
+let removedListingKeys = [];
 
 const money = new Intl.NumberFormat("en-NP", {
   style: "currency",
@@ -171,6 +173,28 @@ function saveLocalWishlist() {
   localStorage.setItem(LOCAL_WISHLIST_KEY, JSON.stringify(wishlistItems));
 }
 
+function saveRemovedListings() {
+  localStorage.setItem(LOCAL_REMOVED_LISTINGS_KEY, JSON.stringify(removedListingKeys));
+}
+
+function loadRemovedListings() {
+  const savedRemovedListings = localStorage.getItem(LOCAL_REMOVED_LISTINGS_KEY);
+
+  if (!savedRemovedListings) {
+    return;
+  }
+
+  try {
+    removedListingKeys = JSON.parse(savedRemovedListings);
+  } catch (error) {
+    removedListingKeys = [];
+  }
+}
+
+function applyRemovedListings(listings) {
+  return listings.filter((item) => !removedListingKeys.includes(getItemKey(item)));
+}
+
 function loadLocalWishlist() {
   const savedWishlist = localStorage.getItem(LOCAL_WISHLIST_KEY);
 
@@ -186,11 +210,13 @@ function loadLocalWishlist() {
 }
 
 async function loadListings() {
+  loadRemovedListings();
+
   try {
     const listings = await apiRequest("/listings");
-    items = listings.map(normalizeListing);
+    items = applyRemovedListings(listings.map(normalizeListing));
   } catch (error) {
-    items = fallbackItems.map(normalizeListing);
+    items = applyRemovedListings(fallbackItems.map(normalizeListing));
     addNotification("Showing demo listings because the backend is offline.");
   }
 
@@ -250,6 +276,15 @@ function watchItemLocally(item) {
   wishlistItems.unshift(item);
   saveLocalWishlist();
   return true;
+}
+
+function removeItemLocally(item) {
+  const itemKey = getItemKey(item);
+  removedListingKeys = [...new Set([...removedListingKeys, itemKey])];
+  items = items.filter((currentItem) => getItemKey(currentItem) !== itemKey);
+  wishlistItems = wishlistItems.filter((wishlistItem) => getItemKey(wishlistItem) !== itemKey);
+  saveRemovedListings();
+  saveLocalWishlist();
 }
 
 async function loadWishlist() {
@@ -313,6 +348,9 @@ function showItems() {
       const itemSeller = escapeHtml(item.seller);
       return `
       <article class="item-card">
+        <button class="remove-item" type="button" onclick="removeListing(${originalIndex})" aria-label="Remove ${itemName}">
+          X
+        </button>
         <div class="item-image">${item.image ? `<img src="${escapeHtml(item.image)}" alt="${itemName}" loading="lazy">` : itemRarity}</div>
         <div class="item-content">
           <span>${itemCategory} / ${itemRarity}</span>
@@ -335,6 +373,32 @@ function showItems() {
     `;
     })
     .join("");
+}
+
+async function removeListing(index) {
+  const item = items[index];
+
+  if (!item) {
+    addNotification("This listing could not be removed.");
+    return;
+  }
+
+  removeItemLocally(item);
+  renderWishlist();
+  showItems();
+  addNotification(`${item.name} was removed from collections.`);
+
+  if (!item.id) {
+    return;
+  }
+
+  try {
+    await apiRequest(`/listings/${item.id}`, {
+      method: "DELETE"
+    });
+  } catch (error) {
+    addNotification("Removed on this page. Start the backend to remove it permanently.");
+  }
 }
 
 async function addToWishlist(index) {

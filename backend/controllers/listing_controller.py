@@ -70,3 +70,41 @@ def create_listing():
         "listing": row_to_dict(listing),
         "message": "Listing created successfully."
     }), 201
+
+
+def delete_listing(listing_id):
+    with get_connection() as connection:
+        listing = connection.execute(
+            """
+            SELECT id, name
+            FROM listings
+            WHERE id = ?
+            """,
+            (listing_id,)
+        ).fetchone()
+
+        if not listing:
+            return jsonify({
+                "error": "Listing was not found."
+            }), 404
+
+        connection.execute(
+            """
+            DELETE FROM wishlist
+            WHERE listing_id = ?
+            """,
+            (listing_id,)
+        )
+        connection.execute(
+            """
+            DELETE FROM listings
+            WHERE id = ?
+            """,
+            (listing_id,)
+        )
+        connection.commit()
+
+    return jsonify({
+        "message": "Listing removed successfully.",
+        "listing": row_to_dict(listing)
+    })
