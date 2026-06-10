@@ -290,12 +290,17 @@ function renderWishlist() {
     return;
   }
 
-  wishlistItems.forEach((item) => {
+  wishlistItems.forEach((item, index) => {
     const entry = document.createElement("li");
     entry.className = "wishlist-entry";
     entry.innerHTML = `
-      <strong>${escapeHtml(item.name)}</strong>
-      <span>${escapeHtml(item.category)} / ${money.format(item.price)}</span>
+      <div>
+        <strong>${escapeHtml(item.name)}</strong>
+        <span>${escapeHtml(item.category)} / ${money.format(item.price)}</span>
+      </div>
+      <button class="wishlist-remove" type="button" onclick="removeFromWishlist(${index})" aria-label="Remove ${escapeHtml(item.name)} from wishlist">
+        Remove
+      </button>
     `;
     wishlist.appendChild(entry);
   });
@@ -320,6 +325,12 @@ function removeItemLocally(item) {
   saveLocalWishlist();
 }
 
+function unwatchItemLocally(item) {
+  const itemKey = getItemKey(item);
+  wishlistItems = wishlistItems.filter((wishlistItem) => getItemKey(wishlistItem) !== itemKey);
+  saveLocalWishlist();
+}
+
 async function loadWishlist() {
   loadLocalWishlist();
   renderWishlist();
@@ -341,6 +352,32 @@ async function loadWishlist() {
 
   renderWishlist();
   showItems();
+}
+
+async function removeFromWishlist(index) {
+  const item = wishlistItems[index];
+
+  if (!item) {
+    addNotification("This wishlist item could not be removed.");
+    return;
+  }
+
+  unwatchItemLocally(item);
+  renderWishlist();
+  showItems();
+  addNotification(`${item.name} was removed from your wishlist.`);
+
+  if (!item.id) {
+    return;
+  }
+
+  try {
+    await apiRequest(`/wishlist/${item.id}`, {
+      method: "DELETE"
+    });
+  } catch (error) {
+    addNotification("Wishlist updated on this page. Log in to update it permanently.");
+  }
 }
 
 function showItems() {

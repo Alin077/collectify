@@ -284,14 +284,34 @@ aside,
 }
 
 .wishlist-entry {
+  align-items: start;
   display: grid;
-  gap: 3px;
+  gap: 8px;
+  grid-template-columns: 1fr auto;
   margin-bottom: 10px;
+}
+
+.wishlist-entry strong,
+.wishlist-entry span {
+  display: block;
 }
 
 .wishlist-entry span {
   color: #64748b;
   font-size: 13px;
+}
+
+.wishlist-remove {
+  background: #e2e8f0;
+  color: #172033;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
+.wishlist-remove:hover,
+.wishlist-remove:focus {
+  background: #fecaca;
+  color: #7f1d1d;
 }
 
 .modal-backdrop {
