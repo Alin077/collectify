@@ -3,6 +3,7 @@ from flask_cors import CORS
 
 from config import SECRET_KEY
 from database import init_db
+from routes.admin_routes import admin_routes
 from routes.auth_routes import auth_routes
 from routes.listing_routes import listing_routes
 from routes.wishlist_routes import wishlist_routes
@@ -13,6 +14,7 @@ def create_app():
     app.config["SECRET_KEY"] = SECRET_KEY
     CORS(app, supports_credentials=True)
     init_db()
+    app.register_blueprint(admin_routes)
     app.register_blueprint(auth_routes)
     app.register_blueprint(listing_routes)
     app.register_blueprint(wishlist_routes)

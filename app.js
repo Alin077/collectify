@@ -326,6 +326,20 @@ async function loadListings() {
   showItems();
 }
 
+async function loadAdminStats() {
+  document.getElementById("totalListings").textContent = items.length;
+
+  try {
+    const stats = await apiRequest("/admin/stats");
+    document.getElementById("totalUsers").textContent = stats.users;
+    document.getElementById("totalListings").textContent = stats.listings;
+    document.getElementById("totalWishlist").textContent = stats.wishlist_items;
+  } catch (error) {
+    document.getElementById("totalUsers").textContent = localStorage.getItem("collectifyUserName") ? "1" : "0";
+    document.getElementById("totalWishlist").textContent = wishlistItems.length;
+  }
+}
+
 async function loadCurrentUser() {
   const profile = document.getElementById("profile");
   const storedName = localStorage.getItem("collectifyUserName");
@@ -478,6 +492,7 @@ function showItems() {
   });
 
   totalListings.textContent = items.length;
+  loadAdminStats();
 
   if (!filteredItems.length) {
     list.innerHTML = `
@@ -821,5 +836,6 @@ async function addItem() {
 loadCurrentUser();
 loadListings();
 loadWishlist();
+loadAdminStats();
 setupModalControls();
 setInterval(updateAuctionTimers, 60000);
