@@ -1,9 +1,29 @@
 import sqlite3
+import re
 
 from flask import jsonify, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from database import get_connection, row_to_dict
+
+
+EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def validate_auth_fields(data, include_name=False):
+    if include_name and len(data.get("name", "").strip()) < 2:
+        return "Name must be at least 2 characters."
+
+    email = data.get("email", "").strip().lower()
+    password = data.get("password", "")
+
+    if not EMAIL_PATTERN.match(email):
+        return "Enter a valid email address."
+
+    if len(password) < 8:
+        return "Password must be at least 8 characters."
+
+    return None
 
 
 def register():
@@ -15,6 +35,13 @@ def register():
         return jsonify({
             "error": "Missing required registration fields.",
             "fields": missing_fields
+        }), 400
+
+    validation_error = validate_auth_fields(data, include_name=True)
+
+    if validation_error:
+        return jsonify({
+            "error": validation_error
         }), 400
 
     password_hash = generate_password_hash(data["password"])
@@ -44,6 +71,13 @@ def register():
 
 def login():
     data = request.get_json(silent=True) or {}
+
+    validation_error = validate_auth_fields(data)
+
+    if validation_error:
+        return jsonify({
+            "error": validation_error
+        }), 400
 
     with get_connection() as connection:
         user = connection.execute(

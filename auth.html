@@ -100,12 +100,34 @@
             localStorage.setItem("collectifyUserEmail", user.email);
         }
 
+        function isValidEmail(email) {
+            return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+        }
+
+        function validateAuthInput({ name = "User", email, password, requireName = false }) {
+            if (requireName && name.trim().length < 2) {
+                return "Name must be at least 2 characters.";
+            }
+
+            if (!isValidEmail(email)) {
+                return "Enter a valid email address.";
+            }
+
+            if (password.length < 8) {
+                return "Password must be at least 8 characters.";
+            }
+
+            return "";
+        }
+
         async function loginAccount() {
             const email = document.getElementById("loginEmail").value.trim();
             const password = document.getElementById("loginPassword").value;
 
-            if (!email || !password) {
-                showAuthMessage("Enter your email and password to log in.");
+            const validationMessage = validateAuthInput({ email, password });
+
+            if (validationMessage) {
+                showAuthMessage(validationMessage);
                 return;
             }
 
@@ -123,8 +145,10 @@
             const email = document.getElementById("registerEmail").value.trim();
             const password = document.getElementById("registerPassword").value;
 
-            if (!name || !email || !password) {
-                showAuthMessage("Enter your name, email and password to create an account.");
+            const validationMessage = validateAuthInput({ name, email, password, requireName: true });
+
+            if (validationMessage) {
+                showAuthMessage(validationMessage);
                 return;
             }
 
