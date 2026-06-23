@@ -342,10 +342,14 @@ async function loadAdminStats() {
 
 async function loadCurrentUser() {
   const profile = document.getElementById("profile");
+  const authLink = document.getElementById("authLink");
+  const logoutButton = document.getElementById("logoutButton");
   const storedName = localStorage.getItem("collectifyUserName");
 
   if (storedName) {
     profile.textContent = storedName;
+    authLink.textContent = "Account";
+    logoutButton.hidden = false;
   }
 
   try {
@@ -355,10 +359,14 @@ async function loadCurrentUser() {
       localStorage.setItem("collectifyUserName", data.user.name);
       localStorage.setItem("collectifyUserEmail", data.user.email);
       profile.textContent = data.user.name;
+      authLink.textContent = "Account";
+      logoutButton.hidden = false;
     }
   } catch (error) {
     if (!storedName) {
       profile.textContent = "Guest User";
+      authLink.textContent = "Login";
+      logoutButton.hidden = true;
     }
   }
 }
@@ -793,6 +801,29 @@ function loginUser() {
   localStorage.setItem("collectifyUserName", "Alin077");
   document.getElementById("profile").textContent = "Alin077";
   addNotification("Signed in as Alin077.");
+}
+
+async function logoutUser() {
+  localStorage.removeItem("collectifyUserName");
+  localStorage.removeItem("collectifyUserEmail");
+  document.getElementById("profile").textContent = "Guest User";
+  document.getElementById("authLink").textContent = "Login";
+  document.getElementById("logoutButton").hidden = true;
+  wishlistItems = [];
+  saveLocalWishlist();
+  renderWishlist();
+  showItems();
+
+  try {
+    await apiRequest("/auth/logout", {
+      method: "POST"
+    });
+  } catch (error) {
+    addNotification("Signed out locally. Backend session was already offline.");
+    return;
+  }
+
+  addNotification("You have been logged out.");
 }
 
 async function addItem() {

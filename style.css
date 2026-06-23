@@ -64,6 +64,15 @@ button:focus {
   text-decoration: none;
 }
 
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.logout-button {
+  font: inherit;
+}
+
 .hero,
 .filters,
 main,

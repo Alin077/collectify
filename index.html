@@ -12,7 +12,12 @@
     <header>
         <h1>Collectify</h1>
         <p>Rare Collects Auction Store</p>
-        <a class="nav-link" href="auth.html">Login</a>
+        <div class="header-actions">
+            <a class="nav-link" id="authLink" href="auth.html">Login</a>
+            <button class="nav-link logout-button" id="logoutButton" type="button" onclick="logoutUser()" hidden>
+                Logout
+            </button>
+        </div>
     </header>
 
     <section class="hero">
