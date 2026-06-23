@@ -87,6 +87,77 @@ def create_listing():
     }), 201
 
 
+def update_listing(listing_id):
+    data = request.get_json(silent=True) or {}
+    allowed_fields = ["name", "category", "rarity", "price", "seller", "rating", "time_left", "image"]
+    updates = {field: data[field] for field in allowed_fields if field in data}
+
+    if not updates:
+        return jsonify({
+            "error": "No listing fields were provided for update."
+        }), 400
+
+    if "price" in updates:
+        try:
+            updates["price"] = int(updates["price"])
+        except (TypeError, ValueError):
+            return jsonify({
+                "error": "Price must be a whole number."
+            }), 400
+
+        if updates["price"] <= 0:
+            return jsonify({
+                "error": "Price must be greater than zero."
+            }), 400
+
+    if "rating" in updates:
+        updates["rating"] = float(updates["rating"])
+
+    if "time_left" in updates:
+        updates["time_left"] = int(updates["time_left"])
+
+    assignments = ", ".join([f"{field} = ?" for field in updates])
+    values = list(updates.values())
+
+    with get_connection() as connection:
+        listing = connection.execute(
+            """
+            SELECT id
+            FROM listings
+            WHERE id = ?
+            """,
+            (listing_id,)
+        ).fetchone()
+
+        if not listing:
+            return jsonify({
+                "error": "Listing was not found."
+            }), 404
+
+        connection.execute(
+            f"""
+            UPDATE listings
+            SET {assignments}
+            WHERE id = ?
+            """,
+            (*values, listing_id)
+        )
+        connection.commit()
+        updated_listing = connection.execute(
+            """
+            SELECT id, name, category, rarity, price, seller, rating, time_left, image
+            FROM listings
+            WHERE id = ?
+            """,
+            (listing_id,)
+        ).fetchone()
+
+    return jsonify({
+        "listing": row_to_dict(updated_listing),
+        "message": "Listing updated successfully."
+    })
+
+
 def delete_listing(listing_id):
     with get_connection() as connection:
         listing = connection.execute(
