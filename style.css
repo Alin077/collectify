@@ -203,6 +203,10 @@ aside,
   margin-bottom: 14px;
 }
 
+.edit-price-button {
+  background: #334155;
+}
+
 .item-meta {
   display: flex;
   margin-bottom: 14px;

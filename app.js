@@ -517,6 +517,9 @@ function showItems() {
             <button class="watch-button ${watched ? "watched" : ""}" type="button" onclick="addToWishlist(event, ${originalIndex})">
               ${watched ? "Watching" : "Watch"}
             </button>
+            <button class="edit-price-button" type="button" onclick="requestPriceUpdate(event, ${originalIndex})">
+              Edit Bid
+            </button>
             <div class="watch-info" role="tooltip">
               <strong>${itemName}</strong>
               <span>${itemRarity} ${itemCategory}</span>
@@ -529,6 +532,51 @@ function showItems() {
     `;
     })
     .join("");
+}
+
+async function requestPriceUpdate(event, index) {
+  event.stopPropagation();
+  const item = items[index];
+
+  if (!item) {
+    addNotification("This listing could not be updated.");
+    return;
+  }
+
+  const nextPrice = Number(prompt(`Enter new bid for ${item.name}`, item.price));
+
+  if (!nextPrice || nextPrice <= 0) {
+    addNotification("Enter a valid bid amount before updating.");
+    return;
+  }
+
+  const previousPrice = item.price;
+  items[index] = {
+    ...item,
+    price: nextPrice
+  };
+  showItems();
+  addNotification(`${item.name} bid updated to ${money.format(nextPrice)}.`);
+
+  if (!item.id) {
+    return;
+  }
+
+  try {
+    const data = await apiRequest(`/listings/${item.id}`, {
+      method: "PUT",
+      body: JSON.stringify({ price: nextPrice })
+    });
+    items[index] = normalizeListing(data.listing);
+    showItems();
+  } catch (error) {
+    items[index] = {
+      ...items[index],
+      price: previousPrice
+    };
+    showItems();
+    addNotification("Backend update failed, so the bid was restored.");
+  }
 }
 
 function openDetailFromKeyboard(event, index) {
