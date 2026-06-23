@@ -1,5 +1,6 @@
 from flask import jsonify, request
 
+from controllers.admin_controller import require_admin
 from database import get_connection, row_to_dict
 
 
@@ -88,6 +89,11 @@ def create_listing():
 
 
 def update_listing(listing_id):
+    if not require_admin():
+        return jsonify({
+            "error": "Admin access is required to update listings."
+        }), 403
+
     data = request.get_json(silent=True) or {}
     allowed_fields = ["name", "category", "rarity", "price", "seller", "rating", "time_left", "image"]
     updates = {field: data[field] for field in allowed_fields if field in data}
@@ -159,6 +165,11 @@ def update_listing(listing_id):
 
 
 def delete_listing(listing_id):
+    if not require_admin():
+        return jsonify({
+            "error": "Admin access is required to remove listings."
+        }), 403
+
     with get_connection() as connection:
         listing = connection.execute(
             """

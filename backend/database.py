@@ -1,8 +1,9 @@
 import sqlite3
 from contextlib import closing
+from werkzeug.security import generate_password_hash
 
 from config import DATABASE_PATH
-from seed_data import seed_default_listings
+from seed_data import DEFAULT_ADMIN, seed_default_admin, seed_default_listings
 
 
 SCHEMA = """
@@ -50,6 +51,7 @@ def init_db():
     with closing(get_connection()) as connection:
         connection.executescript(SCHEMA)
         seed_default_listings(connection)
+        seed_default_admin(connection, generate_password_hash(DEFAULT_ADMIN["password"]))
         connection.commit()
 
 

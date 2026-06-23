@@ -161,6 +161,12 @@ DEFAULT_LISTINGS = [
     }
 ]
 
+DEFAULT_ADMIN = {
+    "name": "Collectify Admin",
+    "email": "admin@collectify.local",
+    "password": "Admin12345"
+}
+
 
 def seed_default_listings(connection):
     existing_names = {
@@ -182,4 +188,26 @@ def seed_default_listings(connection):
         VALUES (:name, :category, :rarity, :price, :seller, :rating, :time_left, :image)
         """,
         new_listings
+    )
+
+
+def seed_default_admin(connection, password_hash):
+    admin = connection.execute(
+        """
+        SELECT id
+        FROM users
+        WHERE email = ?
+        """,
+        (DEFAULT_ADMIN["email"],)
+    ).fetchone()
+
+    if admin:
+        return
+
+    connection.execute(
+        """
+        INSERT INTO users (name, email, password_hash, role)
+        VALUES (?, ?, ?, 'admin')
+        """,
+        (DEFAULT_ADMIN["name"], DEFAULT_ADMIN["email"], password_hash)
     )
