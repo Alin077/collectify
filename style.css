@@ -492,6 +492,11 @@ form {
   margin: 0 8% 28px;
 }
 
+#adminStatus {
+  color: #64748b;
+  font-size: 14px;
+}
+
 @media (max-width: 760px) {
   .hero,
   main,

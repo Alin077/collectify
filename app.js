@@ -328,15 +328,20 @@ async function loadListings() {
 
 async function loadAdminStats() {
   document.getElementById("totalListings").textContent = items.length;
+  const adminStatus = document.getElementById("adminStatus");
 
   try {
     const stats = await apiRequest("/admin/stats");
     document.getElementById("totalUsers").textContent = stats.users;
     document.getElementById("totalListings").textContent = stats.listings;
     document.getElementById("totalWishlist").textContent = stats.wishlist_items;
+    adminStatus.textContent = "Admin dashboard is connected to backend data.";
   } catch (error) {
     document.getElementById("totalUsers").textContent = localStorage.getItem("collectifyUserName") ? "1" : "0";
     document.getElementById("totalWishlist").textContent = wishlistItems.length;
+    adminStatus.textContent = error.message.includes("Admin")
+      ? "Admin login is required to view protected backend totals."
+      : "Backend stats are offline, so local demo totals are shown.";
   }
 }
 
@@ -598,7 +603,9 @@ async function requestPriceUpdate(event, index) {
       price: previousPrice
     };
     showItems();
-    addNotification("Backend update failed, so the bid was restored.");
+    addNotification(error.message.includes("Admin")
+      ? "Only an admin can update backend listing bids."
+      : "Backend update failed, so the bid was restored.");
   }
 }
 
@@ -711,7 +718,9 @@ async function removeListing(index) {
       method: "DELETE"
     });
   } catch (error) {
-    addNotification("Removed on this page. Start the backend to remove it permanently.");
+    addNotification(error.message.includes("Admin")
+      ? "Only an admin can remove backend listings."
+      : "Removed on this page. Start the backend to remove it permanently.");
   }
 }
 
