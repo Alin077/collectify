@@ -47,21 +47,53 @@ The SQLite database contains three main tables:
 - `listings`: stores collectible auction item data.
 - `wishlist`: stores saved listing relationships for logged-in users.
 
-## 8. Limitations
+## 8. Screenshots To Include
+
+Add screenshots for the final submitted report:
+
+| Screenshot | Purpose |
+| ---------- | ------- |
+| Homepage | Shows auction cards, filters and hero section |
+| Product Detail Modal | Shows detailed collectible information |
+| Wishlist | Shows saved collectible listings |
+| Login/Register Page | Shows authentication UI with tabs |
+| Admin Panel | Shows protected dashboard totals |
+| Create Listing Form | Shows how users add new listings |
+| Mobile View | Shows responsive layout |
+
+## 9. Testing Summary
+
+Manual testing should cover:
+
+- Homepage loading
+- Search, filter and sorting
+- Wishlist add/remove
+- Login/register validation
+- Logout behavior
+- Listing creation
+- Bid editing
+- Listing removal
+- Admin-only protected routes
+- Mobile responsiveness
+
+The full testing table is maintained in `docs/manual-testing-checklist.md`.
+
+## 10. Limitations
 
 - Password reset is currently a placeholder.
-- Admin permissions are not fully role-protected yet.
 - Image uploads are represented by URLs/default category images.
 - Payment and bidding history are not included yet.
+- Admin actions are role-protected, but a complete production admin dashboard is not included yet.
+- Automated tests are not included yet.
 
-## 9. Future Enhancements
+## 11. Future Enhancements
 
-- Add full admin role checks.
 - Add bidding history table.
 - Add real image upload support.
 - Add email-based password reset.
+- Add automated backend route tests.
 - Deploy frontend and backend online.
 
-## 10. Conclusion
+## 12. Conclusion
 
 Collectify demonstrates a complete coursework direction with frontend UI, backend APIs, database storage, authentication flow and admin summary features. The project can be further extended into a production-ready collectible marketplace.
