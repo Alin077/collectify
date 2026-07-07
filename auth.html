@@ -16,6 +16,11 @@
 
     <main class="auth-layout">
         <section class="auth-panel auth-tabs-panel">
+            <div class="demo-account">
+                <strong>Admin demo:</strong>
+                <span>admin@collectify.local / Admin12345</span>
+            </div>
+
             <div class="auth-tabs" role="tablist" aria-label="Account forms">
                 <button class="auth-tab active" type="button" onclick="switchAuthTab('login')" id="loginTab">
                     Login
@@ -100,6 +105,12 @@
             localStorage.setItem("collectifyUserEmail", user.email);
         }
 
+        function returnToAuctions() {
+            window.setTimeout(() => {
+                window.location.href = "index.html";
+            }, 900);
+        }
+
         function isValidEmail(email) {
             return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
         }
@@ -134,7 +145,8 @@
             try {
                 const user = await authRequest("/auth/login", { email, password });
                 rememberUser(user);
-                showAuthMessage(`Welcome back, ${user.name}.`);
+                showAuthMessage(`Welcome back, ${user.name}. Returning to auctions...`);
+                returnToAuctions();
             } catch (error) {
                 showAuthMessage(error.message);
             }
@@ -155,8 +167,9 @@
             try {
                 const user = await authRequest("/auth/register", { name, email, password });
                 rememberUser(user);
-                showAuthMessage(`Account created for ${user.name}.`);
+                showAuthMessage(`Account created for ${user.name}. Returning to auctions...`);
                 switchAuthTab("login");
+                returnToAuctions();
             } catch (error) {
                 showAuthMessage(error.message);
             }

@@ -450,6 +450,17 @@ form {
   padding: 22px;
 }
 
+.demo-account {
+  background: #ecfdf5;
+  border: 1px solid #99f6e4;
+  border-radius: 8px;
+  color: #115e59;
+  display: grid;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 12px;
+}
+
 .auth-tabs {
   background: #e2e8f0;
   border-radius: 8px;
