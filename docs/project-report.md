@@ -81,7 +81,7 @@ The full testing table is maintained in `docs/manual-testing-checklist.md`.
 ## 10. Limitations
 
 - Password reset is currently a placeholder.
-- Image uploads are represented by URLs/default category images.
+- Image uploads are represented by image URLs/default category images.
 - Payment and bidding history are not included yet.
 - Admin actions are role-protected, but a complete production admin dashboard is not included yet.
 - Automated tests are not included yet.

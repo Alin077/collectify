@@ -10,6 +10,7 @@ Collectify is a coursework web app for browsing and managing rare collectible au
 - Wishlist actions
 - Profile state from login/register data
 - Listing creation form with backend save support
+- Optional image URL support for new listings
 - Admin summary panel
 - SQLite seed data for demo collectible auctions
 

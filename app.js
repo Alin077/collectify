@@ -845,6 +845,7 @@ async function addItem() {
   const price = Number(document.getElementById("price").value);
   const category = document.getElementById("category").value;
   const rarity = document.getElementById("rarity").value;
+  const imageUrl = document.getElementById("imageUrl").value.trim();
 
   if (!name || price <= 0) {
     addNotification("Add an item name and a valid price before listing.");
@@ -859,7 +860,7 @@ async function addItem() {
     seller: localStorage.getItem("collectifyUserName") || "Guest Seller",
     rating: 5,
     time_left: 300,
-    image: defaultImagesByCategory[category] || defaultImagesByCategory.Memorabilia
+    image: imageUrl || defaultImagesByCategory[category] || defaultImagesByCategory.Memorabilia
   };
 
   try {
