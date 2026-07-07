@@ -4,6 +4,20 @@
 
 5 to 8 minutes.
 
+## Timed Demo Plan
+
+| Time | Section | What To Show |
+| ---- | ------- | ------------ |
+| 0:00-0:45 | Introduction | Project name, problem and target users |
+| 0:45-1:45 | Homepage | Auction cards, Nepali collectibles and image layout |
+| 1:45-2:45 | Browsing | Search, category filter, rarity filter and sorting |
+| 2:45-3:45 | User Features | Product detail modal, wishlist and create listing form |
+| 3:45-4:45 | Authentication | Login/register tabs, validation and admin demo account |
+| 4:45-5:45 | Backend | Flask folders, API routes and SQLite database tables |
+| 5:45-6:45 | Admin | Protected stats, admin messages and listing management |
+| 6:45-7:30 | Documentation | Report, API docs, testing checklist and GitHub commits |
+| 7:30-8:00 | Closing | Limitations and future improvements |
+
 ## 1. Opening
 
 Hello, my project is called Collectify. It is a rare collectible auction web application focused on Nepali cultural and historical collectible items.
@@ -20,9 +34,25 @@ The frontend uses HTML, CSS and JavaScript. The backend uses Flask with SQLite f
 
 Show the home page, product cards, search, category filter, rarity filter, sorting, product detail modal, wishlist and create listing form.
 
+Suggested demo order:
+
+1. Search for `coin`.
+2. Filter by `Books`.
+3. Sort by `Highest Bid`.
+4. Open one product detail modal.
+5. Add one item to the wishlist.
+6. Create a listing with an optional image URL.
+
 ## 5. Authentication Demo
 
 Open the login page. Show the Login and Register tabs, forgot password placeholder and account switch prompts.
+
+Use the admin demo account:
+
+```text
+Email: admin@collectify.local
+Password: Admin12345
+```
 
 ## 6. Backend Explanation
 
@@ -38,7 +68,7 @@ Mention that the app was manually tested for search, filters, sorting, wishlist,
 
 ## 9. Limitations
 
-Password reset is a placeholder, image upload is not fully implemented, and payment/bidding history is not included yet.
+Password reset is a placeholder, image upload uses image URLs instead of uploaded files, and payment/bidding history is not included yet.
 
 ## 10. Closing
 
