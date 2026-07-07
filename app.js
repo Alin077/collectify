@@ -314,12 +314,17 @@ function loadLocalWishlist() {
 
 async function loadListings() {
   loadRemovedListings();
+  const apiStatus = document.getElementById("apiStatus");
 
   try {
     const listings = await apiRequest("/listings");
     items = applyRemovedListings(listings.map(normalizeListing));
+    apiStatus.textContent = "Backend connected: live listings are loaded from SQLite.";
+    apiStatus.className = "api-status connected";
   } catch (error) {
     items = applyRemovedListings(fallbackItems.map(normalizeListing));
+    apiStatus.textContent = "Backend offline: demo listings are shown from local fallback data.";
+    apiStatus.className = "api-status offline";
     addNotification("Showing demo listings because the backend is offline.");
   }
 
