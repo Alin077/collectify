@@ -13,7 +13,13 @@ Collectify is a coursework web app for browsing and managing rare collectible au
 - Admin summary panel
 - SQLite seed data for demo collectible auctions
 
-## Local Setup
+## Local Setup And Run Guide
+
+Open PowerShell in the project folder:
+
+```powershell
+cd F:\Collectify\web-app
+```
 
 Install dependencies:
 
@@ -27,9 +33,43 @@ Start the Flask backend:
 python backend/app.py
 ```
 
-Open `index.html` in the browser for the auction page, or open `auth.html` to register and log in. The frontend expects the API at `http://127.0.0.1:5000/api`.
+Open `index.html` in the browser for the auction page, or open `auth.html` to register and log in.
+
+The frontend expects the API at:
+
+```text
+http://127.0.0.1:5000/api
+```
 
 If the backend is not running, the auction page falls back to demo listings so the interface can still be previewed.
+
+## Demo Accounts
+
+The backend seeds one admin account for coursework testing:
+
+```text
+Email: admin@collectify.local
+Password: Admin12345
+```
+
+Use this account to test protected admin actions such as backend stats, bid updates and listing removal.
+
+## Demo Flow
+
+1. Start the Flask backend.
+2. Open `index.html`.
+3. Search, filter and sort auction listings.
+4. Open `auth.html` and log in as the seeded admin.
+5. Return to the auction page and check admin stats.
+6. Add a listing, edit a bid, watch an item and remove a wishlist item.
+
+## Coursework Submission Notes
+
+- Source code should be pushed to GitHub.
+- `docs/project-report.md` contains the report draft.
+- `docs/api-documentation.md` explains backend routes.
+- `docs/manual-testing-checklist.md` should be updated during final testing.
+- `docs/video-presentation-script.md` can be used for the recorded walkthrough.
 
 ## Suggested Structure
 
@@ -50,10 +90,10 @@ backend/
 
 ## Next Steps
 
-- Add persistent wishlist routes
-- Add admin controls for listings and users
-- Show signed-in-only actions for listing creation
-- Add automated backend route tests
+- Complete manual testing and update the testing checklist
+- Add screenshots to the report
+- Record the video presentation
+- Push final commits to GitHub
 
 ## Image Sources
 
