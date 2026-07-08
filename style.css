@@ -478,6 +478,29 @@ form {
   gap: 12px;
 }
 
+.image-preview {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px dashed #94a3b8;
+  border-radius: 8px;
+  color: #64748b;
+  display: flex;
+  justify-content: center;
+  min-height: 120px;
+  overflow: hidden;
+  padding: 12px;
+}
+
+.image-preview.active {
+  padding: 0;
+}
+
+.image-preview img {
+  height: 160px;
+  object-fit: cover;
+  width: 100%;
+}
+
 .auth-layout {
   display: block;
   margin: 0 auto;

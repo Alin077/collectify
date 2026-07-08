@@ -126,7 +126,12 @@
                 type="url"
                 id="imageUrl"
                 placeholder="Image URL (optional)"
+                oninput="previewListingImage()"
             >
+
+            <div class="image-preview" id="imagePreview">
+                Image preview will appear here.
+            </div>
 
             <button type="button" onclick="addItem()">
                 Add Listing

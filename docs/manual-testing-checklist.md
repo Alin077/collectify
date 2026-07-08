@@ -13,6 +13,7 @@ Use this table while preparing the final coursework submission and video demo.
 | T07 | Wishlist remove | Click `Remove` in wishlist | Listing is removed from wishlist | Pending |
 | T08 | Product details | Click a listing card | Detail modal opens with listing data | Pending |
 | T09 | Create listing | Add name, price, category and rarity | Listing appears in live auctions | Pending |
+| T09A | Image URL preview | Paste image URL in create listing form | Preview image appears before submit | Pending |
 | T10 | Place bid | Click `Place Bid` and enter a higher price | Listing price updates and bid history records it | Pending |
 | T11 | Remove listing | Click remove and confirm | Listing disappears from auction grid | Pending |
 | T12 | Register validation | Register with short password | Validation message appears | Pending |

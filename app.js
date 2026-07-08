@@ -943,6 +943,20 @@ async function addItem() {
   showItems();
 }
 
+function previewListingImage() {
+  const imageUrl = document.getElementById("imageUrl").value.trim();
+  const preview = document.getElementById("imagePreview");
+
+  if (!imageUrl) {
+    preview.innerHTML = "Image preview will appear here.";
+    preview.classList.remove("active");
+    return;
+  }
+
+  preview.classList.add("active");
+  preview.innerHTML = `<img src="${escapeHtml(imageUrl)}" alt="Listing preview">`;
+}
+
 loadCurrentUser();
 loadListings();
 loadWishlist();
