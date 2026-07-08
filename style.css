@@ -242,6 +242,21 @@ aside,
   background: #334155;
 }
 
+.bid-history {
+  border-top: 1px solid #dbe3ef;
+  margin-top: 16px;
+  padding-top: 14px;
+}
+
+.bid-history h3 {
+  margin: 0 0 8px;
+}
+
+.bid-history ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
 .item-meta {
   display: flex;
   margin-bottom: 14px;

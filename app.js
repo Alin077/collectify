@@ -178,6 +178,7 @@ const LOCAL_REMOVED_LISTINGS_KEY = "collectifyRemovedListings";
 let removedListingKeys = [];
 let pendingRemoveIndex = null;
 let openDetailIndex = null;
+let bidHistoryByListing = {};
 
 const money = new Intl.NumberFormat("en-NP", {
   style: "currency",
@@ -265,6 +266,14 @@ function getAuctionStatus(item) {
   }
 
   return "Live";
+}
+
+function getStoredBidHistory(item) {
+  return bidHistoryByListing[getItemKey(item)] || [];
+}
+
+function saveStoredBidHistory(item, bids) {
+  bidHistoryByListing[getItemKey(item)] = bids;
 }
 
 function isWatched(item) {
@@ -550,8 +559,8 @@ function showItems() {
             <button class="watch-button ${watched ? "watched" : ""}" type="button" onclick="addToWishlist(event, ${originalIndex})">
               ${watched ? "Watching" : "Watch"}
             </button>
-            <button class="edit-price-button" type="button" onclick="requestPriceUpdate(event, ${originalIndex})">
-              Edit Bid
+            <button class="edit-price-button" type="button" onclick="requestBid(event, ${originalIndex})">
+              Place Bid
             </button>
             <div class="watch-info" role="tooltip">
               <strong>${itemName}</strong>
@@ -567,40 +576,53 @@ function showItems() {
     .join("");
 }
 
-async function requestPriceUpdate(event, index) {
+async function requestBid(event, index) {
   event.stopPropagation();
   const item = items[index];
 
   if (!item) {
-    addNotification("This listing could not be updated.");
+    addNotification("This listing could not receive a bid.");
     return;
   }
 
-  const nextPrice = Number(prompt(`Enter new bid for ${item.name}`, item.price));
+  const nextPrice = Number(prompt(`Enter a bid higher than ${money.format(item.price)} for ${item.name}`, item.price + 1000));
 
-  if (!nextPrice || nextPrice <= 0) {
-    addNotification("Enter a valid bid amount before updating.");
+  if (!nextPrice || nextPrice <= item.price) {
+    addNotification("Enter a bid higher than the current price.");
     return;
   }
 
   const previousPrice = item.price;
+  const bidderName = localStorage.getItem("collectifyUserName") || "Guest Bidder";
   items[index] = {
     ...item,
     price: nextPrice
   };
+  saveStoredBidHistory(item, [
+    {
+      bidder_name: bidderName,
+      amount: nextPrice,
+      created_at: new Date().toISOString()
+    },
+    ...getStoredBidHistory(item)
+  ]);
   showItems();
-  addNotification(`${item.name} bid updated to ${money.format(nextPrice)}.`);
+  addNotification(`${bidderName} placed ${money.format(nextPrice)} on ${item.name}.`);
 
   if (!item.id) {
     return;
   }
 
   try {
-    const data = await apiRequest(`/listings/${item.id}`, {
-      method: "PUT",
-      body: JSON.stringify({ price: nextPrice })
+    const data = await apiRequest(`/listings/${item.id}/bids`, {
+      method: "POST",
+      body: JSON.stringify({
+        amount: nextPrice,
+        bidder_name: bidderName
+      })
     });
     items[index] = normalizeListing(data.listing);
+    await loadBidHistory(items[index]);
     showItems();
   } catch (error) {
     items[index] = {
@@ -608,9 +630,21 @@ async function requestPriceUpdate(event, index) {
       price: previousPrice
     };
     showItems();
-    addNotification(error.message.includes("Admin")
-      ? "Only an admin can update backend listing bids."
-      : "Backend update failed, so the bid was restored.");
+    addNotification(error.message || "Bid failed, so the previous price was restored.");
+  }
+}
+
+async function loadBidHistory(item) {
+  if (!item.id) {
+    return getStoredBidHistory(item);
+  }
+
+  try {
+    const bids = await apiRequest(`/listings/${item.id}/bids`);
+    saveStoredBidHistory(item, bids);
+    return bids;
+  } catch (error) {
+    return getStoredBidHistory(item);
   }
 }
 
@@ -621,7 +655,7 @@ function openDetailFromKeyboard(event, index) {
   }
 }
 
-function openDetailModal(index) {
+function openDetailModal(index, refreshBids = true) {
   const item = items[index];
 
   if (!item) {
@@ -639,6 +673,7 @@ function openDetailModal(index) {
   const watched = isWatched(item);
   openDetailIndex = index;
 
+  const bids = getStoredBidHistory(item);
   content.innerHTML = `
     <div class="detail-grid">
       <div class="detail-image">
@@ -657,12 +692,30 @@ function openDetailModal(index) {
         <button class="watch-button ${watched ? "watched" : ""}" type="button" onclick="addToWishlist(event, ${index})">
           ${watched ? "Watching" : "Watch"}
         </button>
+        <button class="edit-price-button" type="button" onclick="requestBid(event, ${index})">
+          Place Bid
+        </button>
+        <div class="bid-history">
+          <h3>Bid History</h3>
+          ${
+            bids.length
+              ? `<ul>${bids.slice(0, 5).map((bid) => `<li>${escapeHtml(bid.bidder_name)} bid ${money.format(Number(bid.amount))}</li>`).join("")}</ul>`
+              : "<p>No bids recorded yet.</p>"
+          }
+        </div>
       </div>
     </div>
   `;
 
   modal.classList.add("active");
   modal.setAttribute("aria-hidden", "false");
+  if (refreshBids) {
+    loadBidHistory(item).then(() => {
+      if (openDetailIndex === index) {
+        openDetailModal(index, false);
+      }
+    });
+  }
 }
 
 function closeDetailModal() {
