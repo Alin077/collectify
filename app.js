@@ -179,6 +179,7 @@ let removedListingKeys = [];
 let pendingRemoveIndex = null;
 let openDetailIndex = null;
 let bidHistoryByListing = {};
+let currentUserRole = localStorage.getItem("collectifyUserRole") || "guest";
 
 const money = new Intl.NumberFormat("en-NP", {
   style: "currency",
@@ -276,6 +277,10 @@ function saveStoredBidHistory(item, bids) {
   bidHistoryByListing[getItemKey(item)] = bids;
 }
 
+function isAdminUser() {
+  return currentUserRole === "admin" || localStorage.getItem("collectifyUserEmail") === "admin@collectify.local";
+}
+
 function isWatched(item) {
   const itemKey = getItemKey(item);
   return wishlistItems.some((wishlistItem) => getItemKey(wishlistItem) === itemKey);
@@ -369,6 +374,7 @@ async function loadCurrentUser() {
     profile.textContent = storedName;
     authLink.textContent = "Account";
     logoutButton.hidden = false;
+    currentUserRole = isAdminUser() ? "admin" : "customer";
   }
 
   try {
@@ -377,6 +383,8 @@ async function loadCurrentUser() {
     if (data.user) {
       localStorage.setItem("collectifyUserName", data.user.name);
       localStorage.setItem("collectifyUserEmail", data.user.email);
+      localStorage.setItem("collectifyUserRole", data.user.role || "customer");
+      currentUserRole = data.user.role || "customer";
       profile.textContent = data.user.name;
       authLink.textContent = "Account";
       logoutButton.hidden = false;
@@ -541,11 +549,12 @@ function showItems() {
       const itemSeller = escapeHtml(item.seller);
       const timeLeft = formatTimeLeft(item.time);
       const status = getAuctionStatus(item);
+      const adminControls = isAdminUser()
+        ? `<button class="remove-item" type="button" onclick="requestRemoveListing(event, ${originalIndex})" aria-label="Remove ${itemName}">X</button>`
+        : "";
       return `
       <article class="item-card" onclick="openDetailModal(${originalIndex})" tabindex="0" onkeydown="openDetailFromKeyboard(event, ${originalIndex})">
-        <button class="remove-item" type="button" onclick="requestRemoveListing(event, ${originalIndex})" aria-label="Remove ${itemName}">
-          X
-        </button>
+        ${adminControls}
         <div class="item-image">${item.image ? `<img src="${escapeHtml(item.image)}" alt="${itemName}" loading="lazy">` : itemRarity}</div>
         <div class="item-content">
           <span>${itemCategory} / ${itemRarity}</span>
@@ -873,6 +882,8 @@ function loginUser() {
 async function logoutUser() {
   localStorage.removeItem("collectifyUserName");
   localStorage.removeItem("collectifyUserEmail");
+  localStorage.removeItem("collectifyUserRole");
+  currentUserRole = "guest";
   document.getElementById("profile").textContent = "Guest User";
   document.getElementById("authLink").textContent = "Login";
   document.getElementById("logoutButton").hidden = true;

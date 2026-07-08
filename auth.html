@@ -111,6 +111,7 @@
         function rememberUser(user) {
             localStorage.setItem("collectifyUserName", user.name);
             localStorage.setItem("collectifyUserEmail", user.email);
+            localStorage.setItem("collectifyUserRole", user.role || (user.email === "admin@collectify.local" ? "admin" : "customer"));
         }
 
         function returnToAuctions() {
