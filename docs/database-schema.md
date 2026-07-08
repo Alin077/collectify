@@ -45,12 +45,26 @@ Stores saved listings for logged-in users.
 | `listing_id` | INTEGER | Linked listing |
 | `created_at` | TEXT | Wishlist save timestamp |
 
+### bids
+
+Stores bid records for auction listings.
+
+| Column | Type | Purpose |
+| ------ | ---- | ------- |
+| `id` | INTEGER | Primary key |
+| `listing_id` | INTEGER | Linked listing |
+| `bidder_name` | TEXT | Name of the bidder |
+| `amount` | INTEGER | Bid amount in NPR |
+| `created_at` | TEXT | Bid creation timestamp |
+
 ## Relationships
 
 - One user can save many wishlist items.
 - One listing can appear in many users' wishlists.
+- One listing can have many bids.
 - `wishlist.user_id` references `users.id`.
 - `wishlist.listing_id` references `listings.id`.
+- `bids.listing_id` references `listings.id`.
 
 ## Seed Data
 

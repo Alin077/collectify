@@ -105,6 +105,31 @@ DELETE /listings/<listing_id>
 
 Admin-only route for removing fake or invalid listings.
 
+### Get Bid History
+
+```text
+GET /listings/<listing_id>/bids
+```
+
+Returns bid records for a listing ordered by highest bid.
+
+### Place Bid
+
+```text
+POST /listings/<listing_id>/bids
+```
+
+Body:
+
+```json
+{
+  "amount": 96000,
+  "bidder_name": "Student User"
+}
+```
+
+Creates a bid record and updates the listing current price.
+
 ## Wishlist
 
 ### Get Wishlist

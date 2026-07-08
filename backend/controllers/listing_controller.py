@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, session
 
 from controllers.admin_controller import require_admin
 from database import get_connection, row_to_dict
@@ -162,6 +162,105 @@ def update_listing(listing_id):
         "listing": row_to_dict(updated_listing),
         "message": "Listing updated successfully."
     })
+
+
+def get_bid_history(listing_id):
+    with get_connection() as connection:
+        bids = connection.execute(
+            """
+            SELECT id, listing_id, bidder_name, amount, created_at
+            FROM bids
+            WHERE listing_id = ?
+            ORDER BY amount DESC, created_at DESC
+            """,
+            (listing_id,)
+        ).fetchall()
+
+    return jsonify([row_to_dict(bid) for bid in bids])
+
+
+def place_bid(listing_id):
+    data = request.get_json(silent=True) or {}
+    bidder_name = data.get("bidder_name") or "Guest Bidder"
+
+    try:
+        amount = int(data.get("amount", 0))
+    except (TypeError, ValueError):
+        return jsonify({
+            "error": "Bid amount must be a whole number."
+        }), 400
+
+    with get_connection() as connection:
+        listing = connection.execute(
+            """
+            SELECT id, price
+            FROM listings
+            WHERE id = ?
+            """,
+            (listing_id,)
+        ).fetchone()
+
+        if not listing:
+            return jsonify({
+                "error": "Listing was not found."
+            }), 404
+
+        if amount <= listing["price"]:
+            return jsonify({
+                "error": "Bid must be higher than the current price."
+            }), 400
+
+        user_id = session.get("user_id")
+
+        if user_id:
+            user = connection.execute(
+                """
+                SELECT name
+                FROM users
+                WHERE id = ?
+                """,
+                (user_id,)
+            ).fetchone()
+            bidder_name = user["name"] if user else bidder_name
+
+        cursor = connection.execute(
+            """
+            INSERT INTO bids (listing_id, bidder_name, amount)
+            VALUES (?, ?, ?)
+            """,
+            (listing_id, bidder_name, amount)
+        )
+        connection.execute(
+            """
+            UPDATE listings
+            SET price = ?
+            WHERE id = ?
+            """,
+            (amount, listing_id)
+        )
+        connection.commit()
+        bid = connection.execute(
+            """
+            SELECT id, listing_id, bidder_name, amount, created_at
+            FROM bids
+            WHERE id = ?
+            """,
+            (cursor.lastrowid,)
+        ).fetchone()
+        updated_listing = connection.execute(
+            """
+            SELECT id, name, category, rarity, price, seller, rating, time_left, image
+            FROM listings
+            WHERE id = ?
+            """,
+            (listing_id,)
+        ).fetchone()
+
+    return jsonify({
+        "bid": row_to_dict(bid),
+        "listing": row_to_dict(updated_listing),
+        "message": "Bid placed successfully."
+    }), 201
 
 
 def delete_listing(listing_id):

@@ -38,6 +38,15 @@ CREATE TABLE IF NOT EXISTS wishlist (
     FOREIGN KEY (listing_id) REFERENCES listings(id),
     UNIQUE(user_id, listing_id)
 );
+
+CREATE TABLE IF NOT EXISTS bids (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    listing_id INTEGER NOT NULL,
+    bidder_name TEXT NOT NULL,
+    amount INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (listing_id) REFERENCES listings(id)
+);
 """
 
 
