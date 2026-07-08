@@ -79,6 +79,7 @@ button:focus {
 }
 
 .hero,
+.about-project,
 .filters,
 main,
 .form-section,
@@ -117,6 +118,33 @@ aside,
 .item-content span {
   color: #0f766e;
   font-weight: 700;
+}
+
+.about-project {
+  background: #f8fafc;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1fr minmax(240px, 420px);
+}
+
+.about-project h2 {
+  margin: 0 0 10px;
+}
+
+.about-project p {
+  margin: 0;
+}
+
+.about-points {
+  display: grid;
+  gap: 10px;
+}
+
+.about-points span {
+  background: white;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  padding: 12px;
 }
 
 .filters {
@@ -600,6 +628,7 @@ form {
 
 @media (max-width: 760px) {
   .hero,
+  .about-project,
   main,
   .auth-layout {
     grid-template-columns: 1fr;

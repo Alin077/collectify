@@ -36,6 +36,7 @@ The current system covers a coursework-level prototype with frontend pages, Flas
 - Wishlist add/remove behavior
 - Login and register page with tabs
 - Listing creation form
+- About/project purpose section
 - Listing edit and remove actions
 - Backend routes for authentication, listings, wishlist and admin stats
 
