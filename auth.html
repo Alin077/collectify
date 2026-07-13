@@ -102,7 +102,9 @@
             const data = await response.json().catch(() => ({}));
 
             if (!response.ok) {
-                throw new Error(data.error || "Account request failed.");
+                const error = new Error(data.error || "Account request failed.");
+                error.code = data.code || "AUTH_ERROR";
+                throw error;
             }
 
             return data;
@@ -146,6 +148,15 @@
             returnToAuctions();
         }
 
+        function showRegisterPrompt(email) {
+            showAuthMessage("This email is not registered. Switch to Register and create an account first.", "warning");
+            document.getElementById("registerEmail").value = email;
+            window.setTimeout(() => {
+                switchAuthTab("register");
+                document.getElementById("registerName").focus();
+            }, 900);
+        }
+
         async function loginAccount(event) {
             event.preventDefault();
             const email = document.getElementById("loginEmail").value.trim();
@@ -170,6 +181,8 @@
                 if (error.message === "Failed to fetch") {
                     const name = email === "admin@collectify.local" ? "Collectify Admin" : email.split("@")[0];
                     saveOfflineUser({ name, email });
+                } else if (error.code === "USER_NOT_FOUND") {
+                    showRegisterPrompt(email);
                 } else {
                     showAuthMessage(error.message, "error");
                 }

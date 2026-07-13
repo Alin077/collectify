@@ -89,9 +89,16 @@ def login():
             (data.get("email", "").lower(),)
         ).fetchone()
 
-    if not user or not check_password_hash(user["password_hash"], data.get("password", "")):
+    if not user:
         return jsonify({
-            "error": "Invalid email or password."
+            "error": "This email is not registered. Please create an account first.",
+            "code": "USER_NOT_FOUND"
+        }), 404
+
+    if not check_password_hash(user["password_hash"], data.get("password", "")):
+        return jsonify({
+            "error": "The password is incorrect. Please try again.",
+            "code": "INVALID_PASSWORD"
         }), 401
 
     session["user_id"] = user["id"]
