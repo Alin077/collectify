@@ -13,6 +13,7 @@ Collectify is a coursework web app for browsing and managing rare collectible au
 - Optional image URL support for new listings
 - In-app about section for coursework demo context
 - Admin summary panel
+- Admin management page for users and listings
 - SQLite seed data for demo collectible auctions
 
 ## Local Setup And Run Guide
@@ -69,7 +70,8 @@ Use this account to test protected admin actions such as backend stats, bid upda
 3. Search, filter and sort auction listings.
 4. Open `auth.html` and log in as the seeded admin.
 5. Return to the auction page and check admin stats.
-6. Add a listing, edit a bid, watch an item and remove a wishlist item.
+6. Open `admin.html` to view admin listings and users.
+7. Add a listing, place a bid, watch an item and remove a wishlist item.
 
 ## Coursework Submission Notes
 

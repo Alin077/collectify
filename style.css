@@ -595,6 +595,49 @@ form {
   margin: 0 8% 28px;
 }
 
+.admin-page {
+  padding: 28px 8%;
+}
+
+.admin-heading {
+  margin-bottom: 20px;
+}
+
+.admin-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+}
+
+.admin-table {
+  background: white;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.admin-row {
+  border-top: 1px solid #e2e8f0;
+  display: grid;
+  gap: 4px;
+  padding: 12px 0;
+}
+
+.admin-row:first-child {
+  border-top: 0;
+}
+
+.admin-row span {
+  color: #64748b;
+}
+
+.inline-link {
+  color: #0f766e;
+  display: inline-block;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
 .auth-status {
   border-radius: 8px;
   margin: 0;
@@ -630,6 +673,7 @@ form {
   .hero,
   .about-project,
   main,
+  .admin-grid,
   .auth-layout {
     grid-template-columns: 1fr;
   }

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collectify - Admin</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Collectify Admin</h1>
+        <p>Manage users and collectible listings</p>
+        <a class="nav-link" href="index.html">Back to Auctions</a>
+    </header>
+
+    <section class="admin-page">
+        <div class="admin-heading">
+            <h2>Admin Dashboard</h2>
+            <p id="adminPageStatus">Log in as admin to load management data.</p>
+        </div>
+
+        <div class="admin-grid">
+            <section class="admin-table">
+                <h3>Listings</h3>
+                <div id="adminListings">Loading listings...</div>
+            </section>
+
+            <section class="admin-table">
+                <h3>Users</h3>
+                <div id="adminUsers">Loading users...</div>
+            </section>
+        </div>
+    </section>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:5000/api";
+
+        async function apiRequest(path) {
+            const response = await fetch(`${API_BASE}${path}`, {
+                credentials: "include"
+            });
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(data.error || "Request failed.");
+            }
+
+            return data;
+        }
+
+        function formatMoney(value) {
+            return new Intl.NumberFormat("en-NP", {
+                style: "currency",
+                currency: "NPR",
+                maximumFractionDigits: 0
+            }).format(Number(value));
+        }
+
+        function renderListings(listings) {
+            const container = document.getElementById("adminListings");
+
+            if (!listings.length) {
+                container.textContent = "No listings found.";
+                return;
+            }
+
+            container.innerHTML = listings.map((listing) => `
+                <article class="admin-row">
+                    <strong>${listing.name}</strong>
+                    <span>${listing.category} / ${listing.rarity}</span>
+                    <span>${formatMoney(listing.price)} by ${listing.seller}</span>
+                </article>
+            `).join("");
+        }
+
+        function renderUsers(users) {
+            const container = document.getElementById("adminUsers");
+
+            if (!users.length) {
+                container.textContent = "No users found.";
+                return;
+            }
+
+            container.innerHTML = users.map((user) => `
+                <article class="admin-row">
+                    <strong>${user.name}</strong>
+                    <span>${user.email}</span>
+                    <span>${user.role}</span>
+                </article>
+            `).join("");
+        }
+
+        async function loadAdminPage() {
+            try {
+                const [listings, users] = await Promise.all([
+                    apiRequest("/admin/listings"),
+                    apiRequest("/admin/users")
+                ]);
+                renderListings(listings);
+                renderUsers(users);
+                document.getElementById("adminPageStatus").textContent = "Admin data loaded from backend.";
+            } catch (error) {
+                document.getElementById("adminPageStatus").textContent = error.message;
+                document.getElementById("adminListings").textContent = "Admin login required.";
+                document.getElementById("adminUsers").textContent = "Admin login required.";
+            }
+        }
+
+        loadAdminPage();
+    </script>
+
+</body>
+</html>
