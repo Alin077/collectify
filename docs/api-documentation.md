@@ -173,3 +173,19 @@ GET /admin/stats
 ```
 
 Admin-only route that returns total users, total listings and total wishlist saves.
+
+### Admin Listings
+
+```text
+GET /admin/listings
+```
+
+Admin-only route that returns listing rows for the admin management page.
+
+### Admin Users
+
+```text
+GET /admin/users
+```
+
+Admin-only route that returns user rows for the admin management page.

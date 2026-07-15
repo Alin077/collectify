@@ -41,3 +41,39 @@ def get_dashboard_stats():
         "listings": listings_count,
         "wishlist_items": wishlist_count
     })
+
+
+def get_admin_listings():
+    if not require_admin():
+        return jsonify({
+            "error": "Admin access is required."
+        }), 403
+
+    with get_connection() as connection:
+        listings = connection.execute(
+            """
+            SELECT id, name, category, rarity, price, seller, created_at
+            FROM listings
+            ORDER BY created_at DESC
+            """
+        ).fetchall()
+
+    return jsonify([dict(listing) for listing in listings])
+
+
+def get_admin_users():
+    if not require_admin():
+        return jsonify({
+            "error": "Admin access is required."
+        }), 403
+
+    with get_connection() as connection:
+        users = connection.execute(
+            """
+            SELECT id, name, email, role, created_at
+            FROM users
+            ORDER BY created_at DESC
+            """
+        ).fetchall()
+
+    return jsonify([dict(user) for user in users])
