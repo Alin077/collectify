@@ -35,6 +35,12 @@ Start the Flask backend:
 python backend/app.py
 ```
 
+Or use the helper script:
+
+```powershell
+.\start-project.ps1
+```
+
 Open `index.html` in the browser for the auction page, or open `auth.html` to register and log in.
 
 The frontend expects the API at:
